@@ -1,0 +1,126 @@
+@html.extend('layout' , function() {
+@html.block('body' , function() {
+@{ if(model.error !== undefined) {
+<div class="mt-5 alert alert-danger">
+   <h5> @model.error </h5>
+</div>
+} else {
+
+<!--------------------- BOOKS TABLE ---------------------------------->
+
+<div class="col-md-4 mt-3">
+   <input class="form-control" id="searchInput" type="text" placeholder="Search for books...">
+</div>
+<div class="col-md-4 mt-3">
+   <button id="addBookButton" class="btn btn-success btn-md"> Add New Book </button>
+</div>
+<table class="mt-4 table table-bordered table-striped ">
+   <thead>
+      <tr>
+         <th style="width:  20%" scope="col"> Title </th>
+         <th style="width:  8.33%" scope="col"> Category </th>
+         <th style="width:  8.33%" scope="col"> ISBN </th>
+         <th style="width:  8.33%" scope="col"> Author </th>
+         <th style="width:  8.33%" scope="col"> Total Stock </th>
+         <th style="width:  8.33%" scope="col"> Available Stock </th>
+         <th class="text-center" style="width:  70%" scope="col"> Options </th>
+      </tr>
+   </thead>
+   <tbody id="tableBody">
+      @model.data.forEach(function(book) {
+      <tr>
+         <th> @book.title </th>
+         <th> @book.category </th>
+         <th> @book.isbn </th>
+         <th> @book.author </th>
+         <th class="text-center"> @book.stock </th>
+         <th class="text-center"> 3 </th>
+         <th class="text-center">
+            <button onclick="onEditClick(
+               {   title:'@book.title', 
+               category:'@book.category',
+               isbn:'@book.isbn',
+               author: '@book.author',
+               stock: '@book.stock'
+               })"  class="btn tableButtons btn-sm btn-success">Edit
+            </button>
+            <button class="btn tableButtons btn-sm btn-danger">Delete</button>
+            <button onclick="onIssueClick()" class="btn tableButtons btn-sm btn-info">Issue</button>
+            <button class="btn tableButtons btn-sm btn-warning">Return</button>
+            <button class="btn tableButtons btn-sm btn-light">View</button>
+         </th>
+      </tr>
+      })
+   </tbody>
+</table>
+
+<!--------------------- EDIT MODAL ---------------------------------->
+
+<div class="modal fade" id="editModal">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editing Book</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <form>
+               <div class="mb-3">
+                  <label class="col-form-label">Title</label>
+                  <input required id="bookTitleInput" type="text" class="form-control" id="recipient-name">
+               </div>
+               <div class="mb-3">
+                  <label class="col-form-label">ISBN</label>
+                  <input required id="bookISBNInput" type="text" class="form-control" id="recipient-name">
+               </div>
+               <div class="mb-3">
+                  <label class="col-form-label">Author</label>
+                  <input required id="bookAuthorInput" type="text" class="form-control" id="recipient-name">
+               </div>
+               <div class="mb-3">
+                  <label class="col-form-label">Stock</label>
+                  <input required id="bookStockInput" type="number" class="form-control" id="recipient-name">
+               </div>
+               <div class="mb-3">
+                  <label class="col-form-label">Category</label>
+                  <select id="bookCategorySelect" class="form-select">
+                     <option value="Horror">Horror</option>
+                     <option value="Programming">Programming</option>
+                     <option value="Fantasy">Fantasy</option>
+                  </select>
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button id="saveEdit" type="button" class="btn btn-success">Confirm changes</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!--------------------- ISSUE MODAL ---------------------------------->
+
+<div class="modal fade" id="issueModal">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Issuing ' '</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <form>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button id="issueConfirm" type="button" class="btn btn-success">Issue Book</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<script type="text/javascript" src="js/editbooks.js"></script>
+}}
+})
+})

@@ -1,0 +1,13 @@
+.authButton {
+  font-weight: bold;
+}
+
+nav-link:hover {
+  color: black;
+  font-weight: bold;
+}
+
+li:hover {
+  color: green;
+  border-bottom: 2px solid green;
+}

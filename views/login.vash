@@ -1,0 +1,56 @@
+@html.extend('layout' , function() {
+    @html.block('body' , function() {
+        <form  id="loginForm" action="/login" method="submit" class="mt-5">
+            <div class="col-md-4 mb-3">
+                <label for="exampleInputEmail1" class="form-label">Email address</label>
+                <input id="emailInput" name="email" class="form-control" type="email" placeholder="xyz@pso.pk" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                <input id="passwordInput" name="password" class="form-control" type="password" placeholder="*****" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <span id="forgotPassword" style="text-decoration:none;color:blue"> Forgot Password </span>
+            </div>
+            <div class="col-md-4 mb-3">
+                <button id="loginButton" type="submit" class="btn btn-success btn-md">Login</button>
+            </div>
+        </form>
+
+        <script>
+
+            $("#forgotPassword").click(function() {
+                email = prompt("Enter Email Address")
+                alert("Change Password Link sent to " + email)
+            })
+
+            $("#loginForm").submit(function(e) {
+                e.preventDefault();
+                let email = $("#emailInput").val();
+                let password = $("#passwordInput").val();
+                
+                let dataObj = {
+                    email: email,
+                    password: password
+                }
+
+                let data = JSON.stringify(dataObj)
+                const url = "http://localhost:4000/login"
+                let xhr = new XMLHttpRequest()
+                
+                xhr.open('POST', url, true)
+                xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
+                xhr.send(data);
+ 
+                xhr.onload = function () {
+                    if(xhr.status === 400) {
+                       let result = JSON.parse(xhr.responseText) 
+                       alert(result['error'])
+                    } else if(xhr.status === 200) {
+                        window.location.replace("http://localhost:4000/")
+                    } 
+                }
+            })
+        </script>
+    })
+})

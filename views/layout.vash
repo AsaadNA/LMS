@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <title> PSO | Library Management System </title>
+        <link rel="shortcut icon" href="favicon.svg">
+        <link href="/css/bootstrap.min.css" rel="stylesheet" />
+        <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <link href="./css/layout.css" rel="stylesheet" />
+        <link href="./css/login.css" rel="stylesheet" />
+        <link href="./css/editbooks.css" rel="stylesheet" />
+    </head>
+<body class="container">
+
+    <!-- Displaying Navbar According to Authenticated User -->
+
+   <nav class="navbar navbar-expand-sm navbar-light mt-4">
+    <div class="container-fluid">
+        
+        <!-- Displaying Authenticated User Full Name -->
+        
+        @{ if(model.email !== undefined) {
+            <a class="navbar-brand" href="/">
+                <img src="favicon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+             L.M.S 
+            </a>  <span style="color:green">( Admin : @model.fullName )</span>
+        } else {
+            <a class="navbar-brand" href="/">
+                <img src="favicon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+              L.M.S 
+            </a>
+        }}
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+
+            <!-- Displaying Navlinks depending on Authentication -->
+
+            @{ if(model.email !== undefined) {
+                <li class="nav-item">
+                    <a class="nav-link" href="/editbooks">Edit Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link authButton" href="/logout">Logout</a>
+                </li>
+            } else {
+                 <li class="nav-item">
+                    <a class="nav-link" href="/">View Books</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link authButton" href="/login">Login</a>
+                </li>
+            }}
+        </ul>
+
+        </div>
+    </div>
+    </nav>
+
+    <div class="container">
+        @html.block('body')
+    </div>
+
+    <footer>
+    <!-- Copyright -->
+        <div class="footer-copyright text-center py-3"> <hr>
+            © 2022 Copyright:
+            <a style="color: black;text-decoration:none" href="https://psopk.com/"><strong>Pakistan State Oil</strong></a>
+        </div>
+    <!-- Copyright -->
+    </footer>
+
+</body>
+</html>

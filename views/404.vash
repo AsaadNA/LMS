@@ -1,0 +1,7 @@
+@html.extend('layout' , function() {
+    @html.block('body' , function() {
+        <div class="mt-5">
+            <h4> 404 Page Not Found :'( </h4>
+        </div>
+    })
+})
