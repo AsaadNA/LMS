@@ -3,6 +3,25 @@ const router = express.Router();
 
 const booksSchema = require("../models/books");
 
+router.get("/editbooks/issueHistory/:isbn", (req, res) => {
+  const { isbn } = req.params;
+  const result = booksSchema.findOne({ isbn }, (err, data) => {
+    if (err) {
+      res.status(400).send({
+        error: "Some Error Occured",
+      });
+    } else if (data) {
+      res.status(200).send({
+        data: data["issueHistory"],
+      });
+    } else {
+      res.status(400).send({
+        error: "Could not find book to corresponded ISBN",
+      });
+    }
+  });
+});
+
 router.post("/editbooks/issue", (req, res) => {
   const { isbn, fullName, email } = req.body;
   let result = booksSchema.findOneAndUpdate(

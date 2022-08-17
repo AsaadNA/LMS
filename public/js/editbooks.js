@@ -8,12 +8,13 @@ $(document).ready(function () {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
     });
   });
-});
 
-//Function for adding a new button
-
-$("#addBookButton").click(function () {
-  alert("Adding new book");
+  $("#viewSearchInput").on("keyup", function () {
+    var value = $(this).val().toLowerCase();
+    $("#viewTableBody tr").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
+  });
 });
 
 /* ******* EDIT BUTTON ********** */
@@ -110,4 +111,80 @@ function onIssueClick(data) {
   $("#issueModalTitle").text("Issuing Book '" + data["title"] + "'");
 
   issueISBN = data["isbn"]; //Pass isbn to modal
+}
+
+/* ******* VIEW BUTTON ********** */
+
+//This will reset the table on hide
+$("#viewModal").on("hidden.bs.modal", function () {
+  $("#viewTable tbody").empty();
+});
+
+function onViewClick(isbn) {
+  const url = "http://localhost:4000/editbooks/issueHistory/" + isbn;
+  let xhr = new XMLHttpRequest();
+
+  xhr.open("GET", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhr.send();
+
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      $("#viewModal").modal("show");
+      obj = JSON.parse(xhr.responseText);
+
+      //loop through each person and append to table
+      obj["data"].forEach(function (d) {
+        if (d.returnDate !== null) {
+          $("#viewTable tbody").append(
+            "<tr>" +
+              "<td>" +
+              d.byName +
+              "</td>" +
+              "<td>" +
+              d.byEmail +
+              "</td>" +
+              "<td>" +
+              d.toName +
+              "</td>" +
+              "<td>" +
+              d.toEmail +
+              "</td>" +
+              "<td>" +
+              d.issueDate +
+              "</td>" +
+              "<td>" +
+              d.returnDate +
+              "</td>" +
+              "</tr>"
+          );
+        } else {
+          $("#viewTable tbody").append(
+            "<tr>" +
+              "<td>" +
+              d.byName +
+              "</td>" +
+              "<td>" +
+              d.byEmail +
+              "</td>" +
+              "<td>" +
+              d.toName +
+              "</td>" +
+              "<td>" +
+              d.toEmail +
+              "</td>" +
+              "<td>" +
+              d.issueDate +
+              "</td>" +
+              "<td>" +
+              "Pending" +
+              "</td>" +
+              "</tr>"
+          );
+        }
+      });
+    } else if (xhr.status === 400) {
+      alert(xhr.responseText);
+    }
+  };
 }

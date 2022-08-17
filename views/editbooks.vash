@@ -5,14 +5,9 @@
    <h5> @model.error </h5>
 </div>
 } else {
-
 <!--------------------- BOOKS TABLE ---------------------------------->
-
 <div class="col-md-4 mt-3">
-   <input class="form-control" id="searchInput" type="text" placeholder="Search for books...">
-</div>
-<div class="col-md-4 mt-3">
-   <button id="addBookButton" class="btn btn-success btn-md"> Add New Book </button>
+   <input class="form-control" id="searchInput" type="text" placeholder="Search for books">
 </div>
 <table class="mt-4 table table-bordered table-striped ">
    <thead>
@@ -38,42 +33,37 @@
          <th class="text-center">
             <button onclick="onEditClick(
                {    title:'@book.title', 
-                    category:'@book.category',
-                    isbn:'@book.isbn',
-                    author: '@book.author',
-                    stock: '@book.stock'
+               category:'@book.category',
+               isbn:'@book.isbn',
+               author: '@book.author',
+               stock: '@book.stock'
                })"  class="btn tableButtons btn-sm btn-success">Edit
             </button>
             <button class="btn tableButtons btn-sm btn-danger">Delete</button>
-            
             <!------  CHECK AVAILABLE STOCK  -->
-
             @{ if(model.availableStock[i] === 0) {
-                <button disabled onclick="onIssueClick(
-                    {  title:'@book.title', 
-                       isbn:'@book.isbn',
-                       stock: '@book.stock'
-                       })" class="btn tableButtons btn-sm btn-info">Issue
-                </button>
+            <button disabled onclick="onIssueClick(
+               {  title:'@book.title', 
+               isbn:'@book.isbn',
+               stock: '@book.stock'
+               })" class="btn tableButtons btn-sm btn-info">Issue
+            </button>
             } else {
-                <button enabled onclick="onIssueClick(
-                    {  title:'@book.title', 
-                       isbn:'@book.isbn',
-                       stock: '@book.stock'
-                       })" class="btn tableButtons btn-sm btn-info">Issue
-                </button>
+            <button enabled onclick="onIssueClick(
+               {  title:'@book.title', 
+               isbn:'@book.isbn',
+               stock: '@book.stock'
+               })" class="btn tableButtons btn-sm btn-info">Issue
+            </button>
             }}
-
             <button class="btn tableButtons btn-sm btn-warning">Return</button>
-            <button class="btn tableButtons btn-sm btn-light">View</button>
+            <button onclick="onViewClick('@book.isbn')" class="btn tableButtons btn-sm btn-light">View</button>
          </th>
       </tr>
       })
    </tbody>
 </table>
-
 <!--------------------- EDIT MODAL ---------------------------------->
-
 <div class="modal fade" id="editModal">
    <div class="modal-dialog">
       <div class="modal-content">
@@ -116,9 +106,7 @@
       </div>
    </div>
 </div>
-
 <!--------------------- ISSUE MODAL ---------------------------------->
-
 <div class="modal fade" id="issueModal">
    <div class="modal-dialog">
       <div class="modal-content">
@@ -128,25 +116,54 @@
          </div>
          <div class="modal-body">
             <form id="issueForm" action="POST" method="submit">
-             <div class="mb-3">
+               <div class="mb-3">
                   <label class="col-form-label">Full Name</label>
                   <input required id="issueFullNameInput" type="text" class="form-control" id="recipient-name">
                </div>
                <div class="mb-3">
                   <label class="col-form-label">Email Address</label>
                   <input required id="issueEmailInput" type="email" class="form-control" id="recipient-name">
-               </div><br>
+               </div>
+               <br>
                <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button id="issueConfirm" type="submit" class="btn btn-success">Issue Book</button>
-         </div>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button id="issueConfirm" type="submit" class="btn btn-success">Issue Book</button>
+               </div>
             </form>
          </div>
-         
       </div>
    </div>
 </div>
 
-    <script type="text/javascript" src="js/editbooks.js"></script>
+<!--------------------- ISSUE MODAL ---------------------------------->
+<div class="modal fade bd-example-modal-lg" id="viewModal">
+   <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title">Issue History</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <div class="col-md-4 mt-3">
+                <input class="form-control" id="viewSearchInput" type="text" placeholder="Search record">
+            </div>
+            <table id="viewTable" class="mt-4 table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col"> Issued By (Name) </th>
+                        <th scope="col"> Issued By (Email) </th>
+                        <th scope="col"> Issued To (Name) </th>
+                        <th scope="col"> Issued To (Email) </th>
+                        <th scope="col"> Issue Date </th>
+                        <th scope="col"> Return Date </th>
+                    </tr>
+                    <tbody id="viewTableBody"></tbody>
+                </thead>
+            </table>
+         </div>
+      </div>
+   </div>
+</div>
 
+<script type="text/javascript" src="js/editbooks.js"></script>
 }}})})
