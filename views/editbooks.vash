@@ -27,25 +27,43 @@
       </tr>
    </thead>
    <tbody id="tableBody">
-      @model.data.forEach(function(book) {
+      @model.data.forEach(function(book,i) {
       <tr>
          <th> @book.title </th>
          <th> @book.category </th>
          <th> @book.isbn </th>
          <th> @book.author </th>
          <th class="text-center"> @book.stock </th>
-         <th class="text-center"> 3 </th>
+         <th class="text-center"> @model.availableStock[i] </th>
          <th class="text-center">
             <button onclick="onEditClick(
-               {   title:'@book.title', 
-               category:'@book.category',
-               isbn:'@book.isbn',
-               author: '@book.author',
-               stock: '@book.stock'
+               {    title:'@book.title', 
+                    category:'@book.category',
+                    isbn:'@book.isbn',
+                    author: '@book.author',
+                    stock: '@book.stock'
                })"  class="btn tableButtons btn-sm btn-success">Edit
             </button>
             <button class="btn tableButtons btn-sm btn-danger">Delete</button>
-            <button onclick="onIssueClick()" class="btn tableButtons btn-sm btn-info">Issue</button>
+            
+            <!------  CHECK AVAILABLE STOCK  -->
+
+            @{ if(model.availableStock[i] === 0) {
+                <button disabled onclick="onIssueClick(
+                    {  title:'@book.title', 
+                       isbn:'@book.isbn',
+                       stock: '@book.stock'
+                       })" class="btn tableButtons btn-sm btn-info">Issue
+                </button>
+            } else {
+                <button enabled onclick="onIssueClick(
+                    {  title:'@book.title', 
+                       isbn:'@book.isbn',
+                       stock: '@book.stock'
+                       })" class="btn tableButtons btn-sm btn-info">Issue
+                </button>
+            }}
+
             <button class="btn tableButtons btn-sm btn-warning">Return</button>
             <button class="btn tableButtons btn-sm btn-light">View</button>
          </th>
@@ -60,7 +78,7 @@
    <div class="modal-dialog">
       <div class="modal-content">
          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Editing Book</h5>
+            <h5 class="modal-title" id="editModalTitle">Editing Book</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
          <div class="modal-body">
@@ -105,22 +123,30 @@
    <div class="modal-dialog">
       <div class="modal-content">
          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Issuing ' '</h5>
+            <h5 class="modal-title" id="issueModalTitle"></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
          <div class="modal-body">
-            <form>
+            <form id="issueForm" action="POST" method="submit">
+             <div class="mb-3">
+                  <label class="col-form-label">Full Name</label>
+                  <input required id="issueFullNameInput" type="text" class="form-control" id="recipient-name">
+               </div>
+               <div class="mb-3">
+                  <label class="col-form-label">Email Address</label>
+                  <input required id="issueEmailInput" type="email" class="form-control" id="recipient-name">
+               </div><br>
+               <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button id="issueConfirm" type="submit" class="btn btn-success">Issue Book</button>
+         </div>
             </form>
          </div>
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button id="issueConfirm" type="button" class="btn btn-success">Issue Book</button>
-         </div>
+         
       </div>
    </div>
 </div>
 
-<script type="text/javascript" src="js/editbooks.js"></script>
-}}
-})
-})
+    <script type="text/javascript" src="js/editbooks.js"></script>
+
+}}})})

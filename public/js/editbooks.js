@@ -59,7 +59,7 @@ $("#saveEdit").click(function () {
 
 function onEditClick(data) {
   $("#editModal").modal("show");
-  $("#exampleModalLabel").text("Editing Book '" + data["title"] + "'");
+  $("#editModalTitle").text("Editing Book '" + data["title"] + "'");
   $("#bookTitleInput").val(data["title"]);
   $("#bookISBNInput").val(data["isbn"]);
   $("#bookStockInput").val(data["stock"]);
@@ -70,6 +70,44 @@ function onEditClick(data) {
   oldISBN = $("#bookISBNInput").val();
 }
 
-function onIssueClick() {
+/* ******* ISSUE BUTTON ********** */
+
+//This function is for Issuing Books in the Issue Modal
+//This will send a put request to the backend to issue the book
+
+let issueISBN = ""; //Pass isbn to modal
+$("#issueForm").submit(function (e) {
+  e.preventDefault();
+  let fullName = $("#issueFullNameInput").val();
+  let email = $("#issueEmailInput").val();
+
+  let dataObj = {
+    isbn: issueISBN,
+    fullName: fullName,
+    email: email,
+  };
+
+  let data = JSON.stringify(dataObj);
+  const url = "http://localhost:4000/editbooks/issue";
+  let xhr = new XMLHttpRequest();
+
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhr.send(data);
+
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      $("#issueModal").modal("hide");
+      location.reload();
+    } else if (xhr.status === 400) {
+      alert(xhr.responseText);
+    }
+  };
+});
+
+function onIssueClick(data) {
   $("#issueModal").modal("show");
+  $("#issueModalTitle").text("Issuing Book '" + data["title"] + "'");
+
+  issueISBN = data["isbn"]; //Pass isbn to modal
 }

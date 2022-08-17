@@ -44,7 +44,7 @@
                     <a class="nav-link" href="/about">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link authButton" href="/logout">Logout</a>
+                    <a class="nav-link" href="/logout">Logout</a>
                 </li>
             } else {
                  <li class="nav-item">
@@ -54,7 +54,7 @@
                     <a class="nav-link" href="/about">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link authButton" href="/login">Login</a>
+                    <a class="nav-link" href="/login">Login</a>
                 </li>
             }}
         </ul>
@@ -70,7 +70,7 @@
     <footer>
     <!-- Copyright -->
         <div class="footer-copyright text-center py-3"> <hr>
-            © 2022 Copyright:
+            © 2022 Copyright
             <a style="color: black;text-decoration:none" href="https://psopk.com/"><strong>Pakistan State Oil</strong></a>
         </div>
     <!-- Copyright -->

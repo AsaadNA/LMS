@@ -28,12 +28,12 @@ const booksSchema = new mongoose.Schema({
   },
   issueHistory: [
     {
-      by: { type: String },
+      byName: { type: String },
+      byEmail: { type: String },
       toName: { type: String },
       toEmail: { type: String },
-      issuedate: { type: Date },
-      returndate: { type: Date },
-      email: { type: String },
+      issueDate: { type: Date },
+      returnDate: { type: Date },
     },
   ],
 });
