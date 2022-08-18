@@ -81,6 +81,19 @@ router.post("/editbooks", (req, res) => {
   });
 });
 
+router.delete("/editbooks", (req, res) => {
+  const { isbn } = req.body;
+  const result = booksSchema.findOneAndDelete({ isbn }, (err, data) => {
+    if (err) {
+      res.status(400).send("Could not find book with the ISBN");
+    } else if (data) {
+      res.status(200).send("Successfully deleted the book");
+    } else {
+      res.status(400).send("Unexpected Error Occured");
+    }
+  });
+});
+
 router.put("/editbooks", (req, res) => {
   const { title, isbn, stock, oldisbn, author, category } = req.body;
   const result = booksSchema.findOneAndUpdate(

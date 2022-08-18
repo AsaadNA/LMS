@@ -227,3 +227,27 @@ $("#insertBook").click(function () {
     }
   };
 });
+
+/* ******* DELETE  BUTTON ********** */
+
+function onDeleteClick(isbn) {
+  let dataObj = {
+    isbn,
+  };
+
+  let data = JSON.stringify(dataObj);
+  const url = "http://localhost:4000/editbooks";
+  let xhr = new XMLHttpRequest();
+
+  xhr.open("DELETE", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhr.send(data);
+
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      location.reload();
+    } else if (xhr.status === 400) {
+      alert(xhr.responseText);
+    }
+  };
+}
