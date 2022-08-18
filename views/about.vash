@@ -1,7 +1,0 @@
-@html.extend('layout' , function() {
-    @html.block('body' , function() {
-        <div class="mt-5">
-            <h3> About </h3>
-        </div>
-    })
-})

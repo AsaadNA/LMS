@@ -25,6 +25,8 @@ $(document).ready(function () {
 var oldISBN = "";
 
 $("#saveEdit").click(function () {
+  $("#saveEdit").addClass("disabled");
+
   let title = $("#bookTitleInput").val();
   let isbn = $("#bookISBNInput").val();
   let stock = $("#bookStockInput").val();
@@ -54,6 +56,7 @@ $("#saveEdit").click(function () {
       location.reload();
     } else if (xhr.status === 400) {
       alert(xhr.responseText);
+      $("#saveEdit").removeClass("disabled");
     }
   };
 });
@@ -78,14 +81,17 @@ function onEditClick(data) {
 
 let issueISBN = ""; //Pass isbn to modal
 $("#issueForm").submit(function (e) {
+  $("#issueConfirm").addClass("disabled");
   e.preventDefault();
   let fullName = $("#issueFullNameInput").val();
   let email = $("#issueEmailInput").val();
+  let employeeCode = $("#issueEmployeeCodeInput").val();
 
   let dataObj = {
     isbn: issueISBN,
     fullName: fullName,
     email: email,
+    employeeCode: employeeCode,
   };
 
   let data = JSON.stringify(dataObj);
@@ -99,9 +105,11 @@ $("#issueForm").submit(function (e) {
   xhr.onload = function () {
     if (xhr.status === 200) {
       $("#issueModal").modal("hide");
+      $("#issueConfirm").deleteClass("disabled");
       location.reload();
     } else if (xhr.status === 400) {
       alert(xhr.responseText);
+      $("#issueConfirm").deleteClass("disabled");
     }
   };
 });
@@ -151,6 +159,9 @@ function onViewClick(isbn) {
               d.toEmail +
               "</td>" +
               "<td>" +
+              d.toEmployeeCode +
+              "</td>" +
+              "<td>" +
               d.issueDate +
               "</td>" +
               "<td>" +
@@ -172,6 +183,9 @@ function onViewClick(isbn) {
               "</td>" +
               "<td>" +
               d.toEmail +
+              "</td>" +
+              "<td>" +
+              d.toEmployeeCode +
               "</td>" +
               "<td>" +
               d.issueDate +
@@ -196,6 +210,8 @@ $("#addButton").click(function () {
 });
 
 $("#insertBook").click(function () {
+  $("#insertBook").addClass("disabled");
+
   let title = $("#bookTitleInput_add").val();
   let isbn = $("#bookISBNInput_add").val();
   let stock = $("#bookStockInput_add").val();
@@ -223,6 +239,7 @@ $("#insertBook").click(function () {
       $("#addBookModal").modal("hide");
       location.reload();
     } else if (xhr.status === 400) {
+      $("#insertBook").removeClass("disabled");
       alert(xhr.responseText);
     }
   };
@@ -231,6 +248,8 @@ $("#insertBook").click(function () {
 /* ******* DELETE  BUTTON ********** */
 
 function onDeleteClick(isbn) {
+  $("#deleteButton").addClass("disabled");
+
   let dataObj = {
     isbn,
   };
@@ -247,6 +266,7 @@ function onDeleteClick(isbn) {
     if (xhr.status === 200) {
       location.reload();
     } else if (xhr.status === 400) {
+      $("#deleteButton").removeClass("disabled");
       alert(xhr.responseText);
     }
   };

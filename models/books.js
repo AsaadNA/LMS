@@ -32,6 +32,7 @@ const booksSchema = new mongoose.Schema({
       byEmail: { type: String },
       toName: { type: String },
       toEmail: { type: String },
+      toEmployeeCode: { type: String },
       issueDate: { type: Date },
       returnDate: { type: Date },
     },

@@ -25,6 +25,7 @@
             })
 
             $("#loginForm").submit(function(e) {
+                $("#loginButton").addClass("disabled")
                 e.preventDefault();
                 let email = $("#emailInput").val();
                 let password = $("#passwordInput").val();
@@ -46,6 +47,7 @@
                     if(xhr.status === 400) {
                        let result = JSON.parse(xhr.responseText) 
                        alert(result['error'])
+                       $("#loginButton").removeClass("disabled")
                     } else if(xhr.status === 200) {
                         window.location.replace("http://localhost:4000/")
                     } 

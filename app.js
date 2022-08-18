@@ -48,13 +48,6 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/about", (req, res) => {
-  res.render("about", {
-    email: req.session.email,
-    fullName: req.session.firstName + " " + req.session.lastName,
-  });
-});
-
 app.get("*", (req, res) => {
   res.render("404", {
     email: req.session.email,

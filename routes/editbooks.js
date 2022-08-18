@@ -23,7 +23,7 @@ router.get("/editbooks/issueHistory/:isbn", (req, res) => {
 });
 
 router.post("/editbooks/issue", (req, res) => {
-  const { isbn, fullName, email } = req.body;
+  const { isbn, fullName, email, employeeCode } = req.body;
   let result = booksSchema.findOneAndUpdate(
     { isbn },
     {
@@ -33,6 +33,7 @@ router.post("/editbooks/issue", (req, res) => {
           byEmail: req.session.email,
           toName: fullName,
           toEmail: email,
+          toEmployeeCode: employeeCode,
           issueDate: new Date(),
           returnDate: null,
         },
@@ -143,8 +144,8 @@ router.get("/editbooks", async (req, res) => {
         fullName: req.session.firstName + " " + req.session.lastName,
       });
     } else {
-      res.render("home", {
-        error: "Some error occured while displaying books",
+      res.render("editbooks", {
+        error: "No Books To Show :'(",
         email: req.session.email,
         fullName: req.session.firstName + " " + req.session.lastName,
       });
