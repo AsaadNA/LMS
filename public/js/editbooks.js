@@ -188,3 +188,42 @@ function onViewClick(isbn) {
     }
   };
 }
+
+/* ******* ADD NEW BOOK BUTTON ********** */
+
+$("#addButton").click(function () {
+  $("#addBookModal").modal("show");
+});
+
+$("#insertBook").click(function () {
+  let title = $("#bookTitleInput_add").val();
+  let isbn = $("#bookISBNInput_add").val();
+  let stock = $("#bookStockInput_add").val();
+  let author = $("#bookAuthorInput_add").val();
+  let category = $("#bookCategorySelect_add").val();
+
+  let dataObj = {
+    title: title,
+    isbn: isbn,
+    stock,
+    author: author,
+    category: category,
+  };
+
+  let data = JSON.stringify(dataObj);
+  const url = "http://localhost:4000/editbooks";
+  let xhr = new XMLHttpRequest();
+
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhr.send(data);
+
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      $("#addBookModal").modal("hide");
+      location.reload();
+    } else if (xhr.status === 400) {
+      alert(xhr.responseText);
+    }
+  };
+});

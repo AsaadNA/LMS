@@ -56,6 +56,31 @@ router.post("/editbooks/issue", (req, res) => {
   );
 });
 
+router.post("/editbooks", (req, res) => {
+  const { title, isbn, stock, author, category } = req.body;
+  const newBook = new booksSchema({
+    title,
+    category,
+    isbn,
+    stock,
+    author,
+  });
+
+  const result = newBook.save((err, data) => {
+    if (err) {
+      res.status(400).send({
+        error: "Error occured while inserting new book",
+      });
+    } else if (data) {
+      res.status(200).send({
+        message: "new book added to the database",
+      });
+    } else {
+      ("Unexpected Error Occured");
+    }
+  });
+});
+
 router.put("/editbooks", (req, res) => {
   const { title, isbn, stock, oldisbn, author, category } = req.body;
   const result = booksSchema.findOneAndUpdate(
