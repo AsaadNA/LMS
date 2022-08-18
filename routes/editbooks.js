@@ -22,6 +22,40 @@ router.get("/editbooks/issueHistory/:isbn", (req, res) => {
   });
 });
 
+router.post("/editbooks/return/", (req, res) => {
+  const { isbn, employeeCode } = req.body;
+  const result = booksSchema.findOneAndUpdate(
+    {
+      isbn,
+      "issueHistory.toEmployeeCode": employeeCode,
+      "issueHistory.returnDate": null,
+    },
+    {
+      $set: {
+        "issueHistory.$[el].returnDate": new Date(),
+      },
+    },
+    {
+      arrayFilters: [{ "el.toEmployeeCode": employeeCode }],
+    },
+    (err, data) => {
+      if (err) {
+        res.status(400).send({
+          error: "Unexpected Error Occured",
+        });
+      } else if (data === null) {
+        res.status(400).send({
+          error: "Book is not issued to the user",
+        });
+      } else if (data) {
+        res.status(200).send({
+          data,
+        });
+      }
+    }
+  );
+});
+
 router.post("/editbooks/issue", (req, res) => {
   const { isbn, fullName, email, employeeCode } = req.body;
   let result = booksSchema.findOneAndUpdate(

@@ -105,7 +105,6 @@ $("#issueForm").submit(function (e) {
   xhr.onload = function () {
     if (xhr.status === 200) {
       $("#issueModal").modal("hide");
-      $("#issueConfirm").deleteClass("disabled");
       location.reload();
     } else if (xhr.status === 400) {
       alert(xhr.responseText);
@@ -270,4 +269,40 @@ function onDeleteClick(isbn) {
       alert(xhr.responseText);
     }
   };
+}
+
+/* ******* RETURN BUTTON ********** */
+
+let returnISBN = "";
+$("#returnForm").submit(function (e) {
+  $("#returnConfirm").addClass("disabled");
+  e.preventDefault();
+  employeeCode = $("#returnEmployeeCodeInput").val();
+
+  let dataObj = {
+    isbn: returnISBN,
+    employeeCode: employeeCode,
+  };
+
+  let data = JSON.stringify(dataObj);
+  const url = "http://localhost:4000/editbooks/return";
+  let xhr = new XMLHttpRequest();
+
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  xhr.send(data);
+
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      location.reload();
+    } else if (xhr.status === 400) {
+      $("#returnConfirm").removeClass("disabled");
+      alert(xhr.responseText);
+    }
+  };
+});
+
+function onReturnClick(isbn) {
+  $("#returnModal").modal("show");
+  returnISBN = isbn;
 }

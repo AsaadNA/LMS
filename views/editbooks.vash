@@ -113,7 +113,7 @@ else {
                })" class="btn tableButtons btn-sm btn-info">Issue
             </button>
             }}
-            <button class="btn tableButtons btn-sm btn-warning">Return</button>
+            <button onClick="onReturnClick('@book.isbn')" class="btn tableButtons btn-sm btn-warning">Return</button>
             <button onclick="onViewClick('@book.isbn')" class="btn tableButtons btn-sm btn-light">View</button>
          </th>
       </tr>
@@ -271,5 +271,30 @@ else {
    </div>
 </div>
 
+<!--------------------- RETURN MODAL ---------------------------------->
+<div class="modal fade" id="returnModal">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title">Returning Book</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <form id="returnForm" action="POST" method="submit">
+               <div class="mb-3">
+                  <label class="col-form-label">Employee Code</label>
+                  <input required id="returnEmployeeCodeInput" type="text" class="form-control" id="recipient-name">
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button id="returnConfirm" type="submit" class="btn btn-success">Return Book</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+
 <script type="text/javascript" src="js/editbooks.js"></script>
+
 }}})})
