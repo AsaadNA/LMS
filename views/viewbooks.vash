@@ -1,0 +1,57 @@
+@html.extend('layout' , function() {
+@html.block('body' , function() {
+<style>
+   table.dataTable {
+   padding-top: 5px;
+   }
+   .dataTables_length,
+   .dataTables_filter {
+   padding-top: 30px;
+   }
+</style>
+<div class="mt-4 mb-5">
+</div>
+<div>
+   <table id="viewTable" class="mt-4 table table-hover table-striped table-bordered">
+      <thead>
+         <tr>
+         <th style="width:  20%" scope="col"> Title </th>
+         <th style="width:  8.33%" scope="col"> Category </th>
+         <th style="width:  8.33%" scope="col"> ISBN </th>
+         <th style="width:  8.33%" scope="col"> Author </th>
+         <th style="width:  8.33%" scope="col"> Total Stock </th>
+         <th style="width:  8.33%" scope="col"> Available Stock </th>
+      </tr>
+      <tbody id="viewTableBody">
+        @model.data.forEach(function(book,i) {
+            <tr>
+                <th> @book.title </th>
+                <th> @book.category </th>
+                <th> @book.isbn </th>
+                <th> @book.author </th>
+                <th class="text-center"> @book.stock </th>
+                <th class="text-center"> @model.availableStock[i] </th>
+            </tr>
+        })
+      </tbody>
+      </thead>
+   </table>
+</div>
+<script>
+   var table = $("#viewTable").DataTable({
+   order: [],
+   pageLength: 6,
+   dom: "Bfrtip",
+   buttons: {
+   dom: {
+   button: {
+   tag: "button",
+   className: "btn btn-light btn-md",
+   },
+   },
+   buttons: ["copy","csv","excel","pdf","print"],
+   },
+   });
+</script>
+})
+})

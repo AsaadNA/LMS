@@ -7,6 +7,8 @@ const dotenv = require("dotenv");
 const loginRoutes = require("./routes/login");
 const editbooksRoutes = require("./routes/editbooks");
 
+const booksSchema = require("./models/books");
+
 const app = express();
 
 dotenv.config();
@@ -41,11 +43,29 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(loginRoutes);
 app.use(editbooksRoutes);
 
-app.get("/", (req, res) => {
-  res.render("home", {
-    email: req.session.email,
-    fullName: req.session.firstName + " " + req.session.lastName,
+app.get("/", async (req, res) => {
+  const result = await booksSchema.find({});
+  //Returns Available stock using whether returnDate is null or not
+  let availableStock = [];
+  const resMap = result.map((book) => {
+    let filteredArr = book.issueHistory.filter((h) => {
+      return h.returnDate === null;
+    });
+    availableStock.push(book.stock - filteredArr.length);
   });
+  if (req.session.email !== undefined) {
+    res.render("editbooks", {
+      data: result,
+      availableStock,
+      email: req.session.email,
+      fullName: req.session.firstName + " " + req.session.lastName,
+    });
+  } else {
+    res.render("viewbooks", {
+      data: result,
+      availableStock,
+    });
+  }
 });
 
 app.get("*", (req, res) => {

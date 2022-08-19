@@ -63,14 +63,17 @@
             <!-- Displaying Navlinks depending on Authentication -->
 
             @{ if(model.email !== undefined) {
-                <li class="nav-item">
-                    <a class="nav-link" href="/editbooks">Edit Books</a>
+                 <li class="nav-item">
+                    <a class="nav-link" href="#">Register Admin</a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link" href="#">Change Password</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">Logout</a>
                 </li>
             } else {
-                 <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" href="/">View Books</a>
                 </li>
                 <li class="nav-item">
@@ -78,7 +81,6 @@
                 </li>
             }}
         </ul>
-
         </div>
     </div>
     </nav>

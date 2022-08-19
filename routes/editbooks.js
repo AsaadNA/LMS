@@ -141,30 +141,7 @@ router.put("/editbooks", (req, res) => {
   );
 });
 
-router.get("/editbooks", async (req, res) => {
-  if (req.session.email !== undefined) {
-    const result = await booksSchema.find({});
-    //Returns Available stock using whether returnDate is null or not
-    let availableStock = [];
-    const resMap = result.map((book) => {
-      let filteredArr = book.issueHistory.filter((h) => {
-        return h.returnDate === null;
-      });
-      availableStock.push(book.stock - filteredArr.length);
-    });
-
-    res.render("editbooks", {
-      data: result,
-      availableStock,
-      email: req.session.email,
-      fullName: req.session.firstName + " " + req.session.lastName,
-    });
-  } else {
-    res.redirect("/login");
-  }
-});
-
-router.get("/editbooks/view/:isbn", (req, res) => {
+router.get("/view/:isbn", (req, res) => {
   const { isbn } = req.params;
   if (req.session.email !== undefined) {
     const result = booksSchema.findOne({ isbn }, (err, data) => {
