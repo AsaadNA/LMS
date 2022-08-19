@@ -42,7 +42,8 @@ router.post("/login", (req, res) => {
       }
     } else {
       res.status(400).send({
-        error: "Unexpexted Error Occured",
+        error:
+          "Error: Connection interrupted or server not connected to database",
       });
     }
   });

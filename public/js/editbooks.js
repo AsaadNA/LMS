@@ -2,11 +2,60 @@
 //Filter using every column
 
 $(document).ready(function () {
-  $("#searchInput").on("keyup", function () {
-    var value = $(this).val().toLowerCase();
-    $("#tableBody tr").filter(function () {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-    });
+  //Use this inside your document ready jQuery
+  window.onbeforeunload = function () {
+    window.location.reload(true);
+  };
+  var table = $("#myTable").DataTable({
+    order: [],
+    pageLength: 6,
+    dom: "Bfrtip",
+    buttons: {
+      dom: {
+        button: {
+          tag: "button",
+          className: "btn btn-light btn-md",
+        },
+      },
+      buttons: [
+        {
+          extend: "copy",
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 5],
+          },
+        },
+        {
+          extend: "csv",
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 5],
+          },
+        },
+        {
+          extend: "excel",
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 5],
+          },
+        },
+        {
+          extend: "pdf",
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 5],
+          },
+        },
+        {
+          extend: "print",
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 5],
+          },
+        },
+        {
+          text: "Insert New Book",
+          action: function (e, dt, node, config) {
+            $("#addBookModal").modal("show");
+          },
+        },
+      ],
+    },
   });
 
   $("#viewSearchInput").on("keyup", function () {
@@ -26,6 +75,7 @@ var oldISBN = "";
 
 $("#saveEdit").click(function () {
   $("#saveEdit").addClass("disabled");
+  $("body").addClass("loading");
 
   let title = $("#bookTitleInput").val();
   let isbn = $("#bookISBNInput").val();
@@ -53,9 +103,11 @@ $("#saveEdit").click(function () {
   xhr.onload = function () {
     if (xhr.status === 200) {
       $("#editModal").modal("hide");
+      $("body").removeClass("loading");
       location.reload();
     } else if (xhr.status === 400) {
       alert(xhr.responseText);
+      $("body").removeClass("loading");
       $("#saveEdit").removeClass("disabled");
     }
   };
@@ -81,6 +133,7 @@ function onEditClick(data) {
 
 let issueISBN = ""; //Pass isbn to modal
 $("#issueForm").submit(function (e) {
+  $("body").addClass("loading");
   $("#issueConfirm").addClass("disabled");
   e.preventDefault();
   let fullName = $("#issueFullNameInput").val();
@@ -105,9 +158,11 @@ $("#issueForm").submit(function (e) {
   xhr.onload = function () {
     if (xhr.status === 200) {
       $("#issueModal").modal("hide");
+      $("body").removeClass("loading");
       location.reload();
     } else if (xhr.status === 400) {
       alert(xhr.responseText);
+      $("body").removeClass("loading");
       $("#issueConfirm").deleteClass("disabled");
     }
   };
@@ -120,88 +175,6 @@ function onIssueClick(data) {
   issueISBN = data["isbn"]; //Pass isbn to modal
 }
 
-/* ******* VIEW BUTTON ********** */
-
-//This will reset the table on hide
-$("#viewModal").on("hidden.bs.modal", function () {
-  $("#viewTable tbody").empty();
-});
-
-function onViewClick(isbn) {
-  const url = "http://localhost:4000/editbooks/issueHistory/" + isbn;
-  let xhr = new XMLHttpRequest();
-
-  xhr.open("GET", url, true);
-  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-  xhr.send();
-
-  xhr.onload = function () {
-    if (xhr.status === 200) {
-      $("#viewModal").modal("show");
-      obj = JSON.parse(xhr.responseText);
-
-      //loop through each person and append to table
-      obj["data"].forEach(function (d) {
-        if (d.returnDate !== null) {
-          $("#viewTable tbody").append(
-            "<tr>" +
-              "<td>" +
-              d.byName +
-              "</td>" +
-              "<td>" +
-              d.byEmail +
-              "</td>" +
-              "<td>" +
-              d.toName +
-              "</td>" +
-              "<td>" +
-              d.toEmail +
-              "</td>" +
-              "<td>" +
-              d.toEmployeeCode +
-              "</td>" +
-              "<td>" +
-              d.issueDate +
-              "</td>" +
-              "<td>" +
-              d.returnDate +
-              "</td>" +
-              "</tr>"
-          );
-        } else {
-          $("#viewTable tbody").append(
-            "<tr>" +
-              "<td>" +
-              d.byName +
-              "</td>" +
-              "<td>" +
-              d.byEmail +
-              "</td>" +
-              "<td>" +
-              d.toName +
-              "</td>" +
-              "<td>" +
-              d.toEmail +
-              "</td>" +
-              "<td>" +
-              d.toEmployeeCode +
-              "</td>" +
-              "<td>" +
-              d.issueDate +
-              "</td>" +
-              "<td>" +
-              "Pending" +
-              "</td>" +
-              "</tr>"
-          );
-        }
-      });
-    } else if (xhr.status === 400) {
-      alert(xhr.responseText);
-    }
-  };
-}
-
 /* ******* ADD NEW BOOK BUTTON ********** */
 
 $("#addButton").click(function () {
@@ -209,6 +182,7 @@ $("#addButton").click(function () {
 });
 
 $("#insertBook").click(function () {
+  $("body").addClass("loading");
   $("#insertBook").addClass("disabled");
 
   let title = $("#bookTitleInput_add").val();
@@ -236,10 +210,13 @@ $("#insertBook").click(function () {
   xhr.onload = function () {
     if (xhr.status === 200) {
       $("#addBookModal").modal("hide");
+      $("body").removeClass("loading");
+
       location.reload();
     } else if (xhr.status === 400) {
-      $("#insertBook").removeClass("disabled");
       alert(xhr.responseText);
+      $("#insertBook").removeClass("disabled");
+      $("body").removeClass("loading");
     }
   };
 });
@@ -247,6 +224,7 @@ $("#insertBook").click(function () {
 /* ******* DELETE  BUTTON ********** */
 
 function onDeleteClick(isbn) {
+  $("body").addClass("loading");
   $("#deleteButton").addClass("disabled");
 
   let dataObj = {
@@ -264,9 +242,11 @@ function onDeleteClick(isbn) {
   xhr.onload = function () {
     if (xhr.status === 200) {
       location.reload();
+      $("body").removeClass("loading");
     } else if (xhr.status === 400) {
-      $("#deleteButton").removeClass("disabled");
       alert(xhr.responseText);
+      $("body").removeClass("loading");
+      $("#deleteButton").removeClass("disabled");
     }
   };
 }
@@ -275,6 +255,7 @@ function onDeleteClick(isbn) {
 
 let returnISBN = "";
 $("#returnForm").submit(function (e) {
+  $("body").addClass("loading");
   $("#returnConfirm").addClass("disabled");
   e.preventDefault();
   employeeCode = $("#returnEmployeeCodeInput").val();
@@ -294,10 +275,12 @@ $("#returnForm").submit(function (e) {
 
   xhr.onload = function () {
     if (xhr.status === 200) {
+      $("body").removeClass("loading");
       location.reload();
     } else if (xhr.status === 400) {
-      $("#returnConfirm").removeClass("disabled");
       alert(xhr.responseText);
+      $("body").removeClass("loading");
+      $("#returnConfirm").removeClass("disabled");
     }
   };
 });

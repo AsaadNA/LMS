@@ -1,72 +1,8 @@
 @html.extend('layout' , function() {
 @html.block('body' , function() {
-@{ if(model.error !== undefined) {
-   
-<!--------------------- ADD BOOK MODAL ---------------------------------->
-<div class="modal fade" id="addBookModal">
-   <div class="modal-dialog">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h5 class="modal-title">Adding A New Book</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-         </div>
-         <div class="modal-body">
-            <form>
-               <div class="mb-3">
-                  <label class="col-form-label">Title</label>
-                  <input required id="bookTitleInput_add" type="text" class="form-control" id="recipient-name">
-               </div>
-               <div class="mb-3">
-                  <label class="col-form-label">ISBN</label>
-                  <input required id="bookISBNInput_add" type="text" class="form-control" id="recipient-name">
-               </div>
-               <div class="mb-3">
-                  <label class="col-form-label">Author</label>
-                  <input required id="bookAuthorInput_add" type="text" class="form-control" id="recipient-name">
-               </div>
-               <div class="mb-3">
-                  <label class="col-form-label">Stock</label>
-                  <input required id="bookStockInput_add" type="number" class="form-control" id="recipient-name">
-               </div>
-               <div class="mb-3">
-                  <label class="col-form-label">Category</label>
-                  <select id="bookCategorySelect_add" class="form-select">
-                     <option value="Horror">Horror</option>
-                     <option value="Programming">Programming</option>
-                     <option value="Fantasy">Fantasy</option>
-                  </select>
-               </div>
-            </form>
-         </div>
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button id="insertBook" type="button" class="btn btn-success">Insert Book</button>
-         </div>
-      </div>
-   </div>
-</div>
-
-
-<div class="mt-4 col-md-4 alert alert-danger">
-   <h5> @model.error </h5>
-</div>
-   
-<div class="col-md-4 mt-3">
-   <button id="addButton" class="btn btn-success btn-md"> Add A New Book </button>
-</div>
-
-<script type="text/javascript" src="js/editbooks.js"></script>
-}
-
-<!--------------------- BOOKS TABLE ---------------------------------->
-else {
-<div class="col-md-4 mt-3">
-   <button id="addButton" class="btn btn-success btn-md"> New Book </button>
-</div>
-<div class="col-md-4 mt-3">
-   <input class="form-control" id="searchInput" type="text" placeholder="Search for books">
-</div>
-<table class="mt-4 table table-bordered table-striped">
+<div id="transparentDiv"></div>
+<table id="myTable" class="mt-4 table table-bordered table-hover ">
+   <div id="loadingScreen" class="overlay"> </div> <!-- LOADING OVERLAY -->
    <thead>
       <tr>
          <th style="width:  20%" scope="col"> Title </th>
@@ -114,7 +50,7 @@ else {
             </button>
             }}
             <button onClick="onReturnClick('@book.isbn')" class="btn tableButtons btn-sm btn-warning">Return</button>
-            <button onclick="onViewClick('@book.isbn')" class="btn tableButtons btn-sm btn-light">View</button>
+            <a href="/editbooks/view/@book.isbn" class="btn tableButtons btn-sm btn-light">View</a>
          </th>
       </tr>
       })
@@ -129,6 +65,7 @@ else {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
          <div class="modal-body">
+         <div id="loadingScreen" class="overlay"> </div> <!-- LOADING OVERLAY -->
             <form>
                <div class="mb-3">
                   <label class="col-form-label">Title</label>
@@ -172,8 +109,9 @@ else {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
          <div class="modal-body">
+            <div id="loadingScreen" class="overlay"> </div> <!-- LOADING OVERLAY -->
             <form id="issueForm" action="POST" method="submit">
-            <div class="mb-3">
+               <div class="mb-3">
                   <label class="col-form-label">Employee Code</label>
                   <input required id="issueEmployeeCodeInput" type="text" class="form-control" id="recipient-name">
                </div>
@@ -195,38 +133,6 @@ else {
       </div>
    </div>
 </div>
-
-<!--------------------- VIEW MODAL ---------------------------------->
-<div class="modal fade bd-example-modal-lg" id="viewModal">
-   <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h5 class="modal-title">Issue History</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-         </div>
-         <div class="modal-body">
-            <div class="col mt-3">
-                <input class="form-control" id="viewSearchInput" type="text" placeholder="Search record">
-            </div>
-            <table id="viewTable" class="mt-4 table table-hover table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col"> Issued By (Name) </th>
-                        <th scope="col"> Issued By (Email) </th>
-                        <th scope="col"> Issued To (Name) </th>
-                        <th scope="col"> Issued To (Email) </th>
-                        <th scope="col"> Issued To (Employee Code) </th>
-                        <th scope="col"> Issue Date </th>
-                        <th scope="col"> Return Date </th>
-                    </tr>
-                    <tbody id="viewTableBody"></tbody>
-                </thead>
-            </table>
-         </div>
-      </div>
-   </div>
-</div>
-
 <!--------------------- ADD BOOK MODAL ---------------------------------->
 <div class="modal fade" id="addBookModal">
    <div class="modal-dialog">
@@ -236,6 +142,7 @@ else {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
          <div class="modal-body">
+            <div id="loadingScreen" class="overlay"> </div> <!-- LOADING OVERLAY -->
             <form>
                <div class="mb-3">
                   <label class="col-form-label">Title</label>
@@ -270,7 +177,6 @@ else {
       </div>
    </div>
 </div>
-
 <!--------------------- RETURN MODAL ---------------------------------->
 <div class="modal fade" id="returnModal">
    <div class="modal-dialog">
@@ -280,6 +186,7 @@ else {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
          <div class="modal-body">
+            <div id="loadingScreen" class="overlay"> </div> <!-- LOADING OVERLAY -->
             <form id="returnForm" action="POST" method="submit">
                <div class="mb-3">
                   <label class="col-form-label">Employee Code</label>
@@ -294,7 +201,6 @@ else {
       </div>
    </div>
 </div>
-
 <script type="text/javascript" src="js/editbooks.js"></script>
-
-}}})})
+})
+})

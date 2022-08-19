@@ -1,0 +1,12 @@
+table.dataTable {
+  padding-top: 5px;
+}
+
+.dataTables_length,
+.dataTables_filter {
+  padding-top: 30px;
+}
+#transparentDiv {
+  background-color: white;
+  padding: 20px;
+}

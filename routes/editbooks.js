@@ -3,24 +3,7 @@ const router = express.Router();
 
 const booksSchema = require("../models/books");
 
-router.get("/editbooks/issueHistory/:isbn", (req, res) => {
-  const { isbn } = req.params;
-  const result = booksSchema.findOne({ isbn }, (err, data) => {
-    if (err) {
-      res.status(400).send({
-        error: "Some Error Occured",
-      });
-    } else if (data) {
-      res.status(200).send({
-        data: data["issueHistory"],
-      });
-    } else {
-      res.status(400).send({
-        error: "Could not find book to corresponded ISBN",
-      });
-    }
-  });
-});
+router.get("/editbooks/issueHistory/:isbn", (req, res) => {});
 
 router.post("/editbooks/return/", (req, res) => {
   const { isbn, employeeCode } = req.body;
@@ -161,29 +144,51 @@ router.put("/editbooks", (req, res) => {
 router.get("/editbooks", async (req, res) => {
   if (req.session.email !== undefined) {
     const result = await booksSchema.find({});
-    if (result.length > 0) {
-      //Returns Available stock using whether returnDate is null or not
-      let availableStock = [];
-      const resMap = result.map((book) => {
-        let filteredArr = book.issueHistory.filter((h) => {
-          return h.returnDate === null;
-        });
-        availableStock.push(book.stock - filteredArr.length);
+    //Returns Available stock using whether returnDate is null or not
+    let availableStock = [];
+    const resMap = result.map((book) => {
+      let filteredArr = book.issueHistory.filter((h) => {
+        return h.returnDate === null;
       });
+      availableStock.push(book.stock - filteredArr.length);
+    });
 
-      res.render("editbooks", {
-        data: result,
-        availableStock,
-        email: req.session.email,
-        fullName: req.session.firstName + " " + req.session.lastName,
-      });
-    } else {
-      res.render("editbooks", {
-        error: "No Books To Show :'(",
-        email: req.session.email,
-        fullName: req.session.firstName + " " + req.session.lastName,
-      });
-    }
+    res.render("editbooks", {
+      data: result,
+      availableStock,
+      email: req.session.email,
+      fullName: req.session.firstName + " " + req.session.lastName,
+    });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+router.get("/editbooks/view/:isbn", (req, res) => {
+  const { isbn } = req.params;
+  if (req.session.email !== undefined) {
+    const result = booksSchema.findOne({ isbn }, (err, data) => {
+      if (err) {
+        res.render("issuehistory", {
+          email: req.session.email,
+          fullName: req.session.firstName + " " + req.session.lastName,
+          error: "Some Error Occured",
+        });
+      } else if (data) {
+        res.render("issuehistory", {
+          isbn,
+          data: data["issueHistory"],
+          email: req.session.email,
+          fullName: req.session.firstName + " " + req.session.lastName,
+        });
+      } else {
+        res.render("issuehistory", {
+          email: req.session.email,
+          fullName: req.session.firstName + " " + req.session.lastName,
+          error: "Could not find book to corresponded ISBN",
+        });
+      }
+    });
   } else {
     res.redirect("/login");
   }

@@ -1,0 +1,64 @@
+@html.extend('layout' , function() {
+@html.block('body' , function() {
+<style>
+   table.dataTable {
+   padding-top: 5px;
+   }
+   .dataTables_length,
+   .dataTables_filter {
+   padding-top: 30px;
+   }
+   #transparentDiv {
+   background-color: white;
+   padding: 20px;
+   }
+</style>
+<div class="mt-5 mb-4">
+   <h4> Issue History for ISBN @model.isbn </h4>
+</div>
+<div>
+   <table id="viewTable" class="mt-4 table table-hover table-bordered">
+      <thead>
+         <tr>
+            <th scope="col"> Issued By (Name) </th>
+            <th scope="col"> Issued By (Email) </th>
+            <th scope="col"> Issued To (Name) </th>
+            <th scope="col"> Issued To (Email) </th>
+            <th scope="col"> Issued To (Employee Code) </th>
+            <th scope="col"> Issue Date </th>
+            <th scope="col"> Return Date </th>
+         </tr>
+      <tbody id="viewTableBody">
+        @model.data.forEach(function(history) {
+            <tr>
+                <td> @history.byName </td>
+                <td> @history.byEmail </td>
+                <td> @history.toName </td>
+                <td> @history.toEmail </td>
+                <td> @history.toEmployeeCode </td>
+                <td> @history.issueDate </td>
+                <td> @history.returnDate </td>
+            </tr>
+        })
+      </tbody>
+      </thead>
+   </table>
+</div>
+<script>
+   var table = $("#viewTable").DataTable({
+   order: [],
+   pageLength: 6,
+   dom: "Bfrtip",
+   buttons: {
+   dom: {
+   button: {
+   tag: "button",
+   className: "btn btn-light btn-md",
+   },
+   },
+   buttons: ["copy","csv","excel","pdf","print"],
+   },
+   });
+</script>
+})
+})
