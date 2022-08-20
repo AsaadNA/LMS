@@ -14,7 +14,7 @@ $(document).ready(function () {
       dom: {
         button: {
           tag: "button",
-          className: "btn btn-light btn-md",
+          className: "btn btn-success btn-md",
         },
       },
       buttons: [

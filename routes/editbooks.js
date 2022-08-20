@@ -149,8 +149,8 @@ router.put("/editbooks", (req, res) => {
   );
 });
 
-router.get("/view/:isbn", (req, res) => {
-  const { isbn } = req.params;
+router.get("/view/:isbn/:title", (req, res) => {
+  const { isbn, title } = req.params;
   if (req.session.email !== undefined) {
     const result = booksSchema.findOne({ isbn }, (err, data) => {
       if (err) {
@@ -162,6 +162,7 @@ router.get("/view/:isbn", (req, res) => {
       } else if (data) {
         res.render("issuehistory", {
           isbn,
+          title,
           data: data["issueHistory"],
           email: req.session.email,
           fullName: req.session.firstName + " " + req.session.lastName,

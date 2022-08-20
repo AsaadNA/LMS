@@ -51,7 +51,7 @@
             </button>
             }}
             <button onClick="onReturnClick('@book.isbn')" class="btn tableButtons btn-sm btn-warning">Return</button>
-            <a href="/view/@book.isbn" class="btn tableButtons btn-sm btn-light">View</a>
+            <a href="/view/@book.isbn/@book.title" class="btn tableButtons btn-sm btn-light">View</a>
          </th>
       </tr>
       })

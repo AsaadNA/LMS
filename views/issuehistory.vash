@@ -6,15 +6,15 @@
    }
    .dataTables_length,
    .dataTables_filter {
-   padding-top: 30px;
+   padding-top: 0px;
    }
    #transparentDiv {
    background-color: white;
-   padding: 20px;
+   padding: 10px;
    }
 </style>
-<div class="mt-5 mb-4">
-   <h4> Issue History for ISBN @model.isbn </h4>
+<div class="mt-5 mb-5">
+   <h4> Issue History : "@model.title" ( ISBN @model.isbn )</h4>
 </div>
 <div>
    <table id="viewTable" class="mt-4 table table-hover table-bordered">
@@ -53,7 +53,7 @@
    dom: {
    button: {
    tag: "button",
-   className: "btn btn-light btn-md",
+   className: "btn btn-success btn-md",
    },
    },
    buttons: ["copy","csv","excel","pdf","print"],

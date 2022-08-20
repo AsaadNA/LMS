@@ -6,7 +6,7 @@
    }
    .dataTables_length,
    .dataTables_filter {
-   padding-top: 30px;
+   padding-top: 0px;
    }
 </style>
 <div class="mt-4 mb-5">
@@ -46,7 +46,7 @@
    dom: {
    button: {
    tag: "button",
-   className: "btn btn-light btn-md",
+   className: "btn btn-success btn-md",
    },
    },
    buttons: ["copy","csv","excel","pdf","print"],
