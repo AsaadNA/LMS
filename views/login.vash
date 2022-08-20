@@ -20,11 +20,62 @@
             </div>
         </form>
 
+        <!--------------------- REGISTER ADMIN MODAL ---------------------------------->
+      <div class="modal fade" id="forgotPasswordModal">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title">Forgot Password</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                  <div id="loadingScreen" class="overlay"> </div> <!-- LOADING OVERLAY -->
+                  <form id="forgotPasswordForm" action="POST" method="submit">
+                     <div class="mb-3">
+                        <label class="col-form-label">Email</label>
+                        <input required id="forgotPasswordEmailInput" type="email" class="form-control" id="recipient-name">
+                     </div>
+                     <div class="modal-footer">
+                        <button id="forgotConfirm" type="submit" class="btn btn-success">Send Password</button>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+
         <script>
 
-            $("#forgotPassword").click(function() {
-                email = prompt("Enter Email Address")
+            $("#forgotPasswordForm").submit(function(e) {
+                $("body").addClass("loading");
+                $("#forgotConfirm").addClass("disabled");
+                e.preventDefault();
+
+                let email = $("#forgotPasswordEmailInput").val();
+                let data = JSON.stringify({email});
+                const url = "http://localhost:4000/login/forgotpassword"
+                let xhr = new XMLHttpRequest()
                 
+                xhr.open('POST', url, true)
+                xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8')
+                xhr.send(data);
+
+                xhr.onload = function () {
+                    if(xhr.status === 200) {
+                        $("#forgotPasswordModal").modal("hide");
+                        $("#forgotConfirm").removeClass("disabled");
+                        $("body").removeClass("loading");
+                        alert(xhr.responseText)
+                    } else if(xhr.status === 400) {
+                        alert(xhr.responseText)
+                        $("body").removeClass("loading");
+                        $("#forgotConfirm").removeClass("disabled");
+                    }
+                }
+            })
+
+            $("#forgotPassword").click(function() {
+                $("#forgotPasswordModal").modal("show");
             })
 
             $("#loginForm").submit(function(e) {

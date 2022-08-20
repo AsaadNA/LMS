@@ -3,6 +3,8 @@ const router = express.Router();
 
 const booksSchema = require("../models/books");
 
+const nodemailer = require("nodemailer");
+
 router.post("/editbooks/return/", (req, res) => {
   const { isbn, employeeCode } = req.body;
   const result = booksSchema.findOneAndUpdate(
@@ -69,7 +71,26 @@ router.post("/editbooks/issue", (req, res) => {
             if (err) {
               res.status(400).send("Some error occured issuing book");
             } else if (data) {
-              //TODO:
+              var date = new Date(); // Now
+              date.setDate(date.getDate() + 30);
+              let transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                  user: process.env.SYSTEM_EMAIL,
+                  pass: process.env.SYSTEM_PASSWORD,
+                },
+                tls: {
+                  rejectUnauthorized: false,
+                },
+              });
+              let mailOptions = {
+                from: "process.env.SYSTEM_EMAIL",
+                to: email,
+                subject: "NEW BOOK ISSUED : " + data["title"],
+                text: "Kindly return book before 30 days i.e " + date,
+              };
+
+              transporter.sendMail(mailOptions, (err, info) => {}); //sending the mail
 
               res.status(200).send({
                 message: "Book Issued",

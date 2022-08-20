@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+const nodemailer = require("nodemailer");
 const adminSchema = require("../models/admins");
 
 router.get("/login", (req, res) => {
@@ -16,6 +17,58 @@ router.get("/login", (req, res) => {
 router.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
+});
+
+var generator = require("generate-password");
+
+router.post("/login/forgotpassword/", (req, res) => {
+  let { email } = req.body;
+  const result = adminSchema.findOne({ email }, (err, data) => {
+    if (err) {
+      res.status(400).send("Unexpected Error Occured");
+    } else if (data) {
+      const newPassword = generator.generate({ length: 10, numbers: true });
+      const searchResult = adminSchema.findOneAndUpdate(
+        { email },
+        { password: newPassword },
+        (err, data) => {
+          if (err) {
+            res.status(400).send("Unexpected Error Occurred");
+          } else if (data) {
+            let transporter = nodemailer.createTransport({
+              service: "gmail",
+              auth: {
+                user: process.env.SYSTEM_EMAIL,
+                pass: process.env.SYSTEM_PASSWORD,
+              },
+              tls: {
+                rejectUnauthorized: false,
+              },
+            });
+            let mailOptions = {
+              from: "process.env.SYSTEM_EMAIL",
+              to: email,
+              subject: "Newly Generated Password",
+              text: "Password: " + newPassword,
+            };
+
+            //sending the mail
+            transporter.sendMail(mailOptions, (err, info) => {
+              if (info) {
+                res.status(200).send("Email sent to " + email);
+              } else if (err) {
+                res.status(400).send("Try Again");
+              }
+            });
+          } else {
+            res.status(400).send("Could not find this email in DB to update");
+          }
+        }
+      );
+    } else {
+      res.status(400).send("Could not find this email in DB");
+    }
+  });
 });
 
 router.put("/login/password", (req, res) => {
