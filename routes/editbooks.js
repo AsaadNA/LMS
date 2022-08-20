@@ -3,8 +3,6 @@ const router = express.Router();
 
 const booksSchema = require("../models/books");
 
-router.get("/editbooks/issueHistory/:isbn", (req, res) => {});
-
 router.post("/editbooks/return/", (req, res) => {
   const { isbn, employeeCode } = req.body;
   const result = booksSchema.findOneAndUpdate(
@@ -71,6 +69,8 @@ router.post("/editbooks/issue", (req, res) => {
             if (err) {
               res.status(400).send("Some error occured issuing book");
             } else if (data) {
+              //TODO:
+
               res.status(200).send({
                 message: "Book Issued",
               });

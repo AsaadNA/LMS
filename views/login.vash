@@ -24,7 +24,7 @@
 
             $("#forgotPassword").click(function() {
                 email = prompt("Enter Email Address")
-                alert("Change Password Link sent to " + email)
+                
             })
 
             $("#loginForm").submit(function(e) {

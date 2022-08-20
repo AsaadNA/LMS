@@ -6,6 +6,7 @@ nav-link:hover {
 li:hover {
   color: green;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .overlay {
