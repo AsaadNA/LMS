@@ -35,6 +35,7 @@ const booksSchema = new mongoose.Schema({
       toEmployeeCode: { type: String },
       issueDate: { type: Date },
       returnDate: { type: Date },
+      hasDefaulted: { type: Boolean },
     },
   ],
 });

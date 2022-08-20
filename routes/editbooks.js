@@ -16,6 +16,7 @@ router.post("/editbooks/return/", (req, res) => {
     {
       $set: {
         "issueHistory.$[el].returnDate": new Date(),
+        "issueHistory.$[el].hasDefaulted": false,
       },
     },
     {
@@ -40,70 +41,84 @@ router.post("/editbooks/return/", (req, res) => {
 router.post("/editbooks/issue", (req, res) => {
   const { isbn, fullName, email, employeeCode } = req.body;
 
-  //Check if book already issued or not
-  const result = booksSchema.findOne(
+  //Check if user is defaulted in any books
+  const defaultSearch = booksSchema.find(
     {
-      isbn,
       "issueHistory.toEmployeeCode": employeeCode,
-      "issueHistory.returnDate": null,
+      "issueHistory.hasDefaulted": true,
     },
     (err, data) => {
-      if (err) {
-        res.status(400).send("Unexpected Error Occurred");
-      } else if (data === null) {
-        //if not issued
-        let result = booksSchema.findOneAndUpdate(
-          { isbn },
+      if (data.length === 0) {
+        //Check if book already issued or not
+        const result = booksSchema.findOne(
           {
-            $push: {
-              issueHistory: {
-                byName: req.session.firstName + " " + req.session.lastName,
-                byEmail: req.session.email,
-                toName: fullName,
-                toEmail: email,
-                toEmployeeCode: employeeCode,
-                issueDate: new Date(),
-                returnDate: null,
-              },
-            },
+            isbn,
+            "issueHistory.toEmployeeCode": employeeCode,
+            "issueHistory.returnDate": null,
           },
           (err, data) => {
             if (err) {
-              res.status(400).send("Some error occured issuing book");
+              res.status(400).send("Unexpected Error Occurred");
+            } else if (data === null) {
+              //if not issued
+              let result = booksSchema.findOneAndUpdate(
+                { isbn },
+                {
+                  $push: {
+                    issueHistory: {
+                      byName:
+                        req.session.firstName + " " + req.session.lastName,
+                      byEmail: req.session.email,
+                      toName: fullName,
+                      toEmail: email,
+                      toEmployeeCode: employeeCode,
+                      issueDate: new Date(),
+                      returnDate: null,
+                    },
+                  },
+                },
+                (err, data) => {
+                  if (err) {
+                    res.status(400).send("Some error occured issuing book");
+                  } else if (data) {
+                    var date = new Date(); // Now
+                    date.setDate(date.getDate() + 30);
+                    let transporter = nodemailer.createTransport({
+                      service: "gmail",
+                      auth: {
+                        user: process.env.SYSTEM_EMAIL,
+                        pass: process.env.SYSTEM_PASSWORD,
+                      },
+                      tls: {
+                        rejectUnauthorized: false,
+                      },
+                    });
+                    let mailOptions = {
+                      from: "process.env.SYSTEM_EMAIL",
+                      to: email,
+                      subject: "NEW BOOK ISSUED : " + data["title"],
+                      text: "Kindly return book before 30 days i.e " + date,
+                    };
+
+                    transporter.sendMail(mailOptions, (err, info) => {}); //sending the mail
+
+                    res.status(200).send({
+                      message: "Book Issued",
+                    });
+                  } else {
+                    res.status(400).send("Could not find book");
+                  }
+                }
+              );
             } else if (data) {
-              var date = new Date(); // Now
-              date.setDate(date.getDate() + 30);
-              let transporter = nodemailer.createTransport({
-                service: "gmail",
-                auth: {
-                  user: process.env.SYSTEM_EMAIL,
-                  pass: process.env.SYSTEM_PASSWORD,
-                },
-                tls: {
-                  rejectUnauthorized: false,
-                },
-              });
-              let mailOptions = {
-                from: "process.env.SYSTEM_EMAIL",
-                to: email,
-                subject: "NEW BOOK ISSUED : " + data["title"],
-                text: "Kindly return book before 30 days i.e " + date,
-              };
-
-              transporter.sendMail(mailOptions, (err, info) => {}); //sending the mail
-
-              res.status(200).send({
-                message: "Book Issued",
-              });
-            } else {
-              res.status(400).send("Could not find book");
+              res
+                .status(400)
+                .send("Book already Has been issued to this employee code");
             }
           }
         );
-      } else if (data) {
-        res
-          .status(400)
-          .send("Book already Has been issued to this employee code");
+      } else {
+        res.status(400).send("Sorry, this user is defaulted");
       }
     }
   );
