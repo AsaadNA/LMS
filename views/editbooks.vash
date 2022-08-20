@@ -29,7 +29,8 @@
                category:'@book.category',
                isbn:'@book.isbn',
                author: '@book.author',
-               stock: '@book.stock'
+               stock: '@book.stock',
+               availableStock : '@model.availableStock[i]'
                })"  class="btn tableButtons btn-sm btn-success">Edit
             </button>
             <button id="deleteButton" onclick="onDeleteClick('@book.isbn')" class="btn tableButtons btn-sm btn-danger">Delete</button>

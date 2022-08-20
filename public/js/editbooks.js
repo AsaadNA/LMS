@@ -72,6 +72,18 @@ $(document).ready(function () {
 //This will send a put request to the backend to update the book
 
 var oldISBN = "";
+var totalAvailableStock = 0;
+var availableStock = 0;
+
+//Prevent stock lowering less then the issued stock
+$("#bookStockInput").on("input", function () {
+  issuedStock = totalAvailableStock - availableStock;
+  if ($(this).val() <= 0) $(this).val(0);
+  if ($(this).val() < issuedStock && issuedStock !== 0) {
+    alert(issuedStock + " Books have been issued already");
+    $(this).val(issuedStock);
+  }
+});
 
 $("#saveEdit").click(function () {
   $("#saveEdit").addClass("disabled");
@@ -124,6 +136,8 @@ function onEditClick(data) {
 
   //Here we save the oldISBN just in case an ISBN needs to be updated
   oldISBN = $("#bookISBNInput").val();
+  availableStock = data["availableStock"];
+  totalAvailableStock = data["stock"];
 }
 
 /* ******* ISSUE BUTTON ********** */
@@ -163,7 +177,7 @@ $("#issueForm").submit(function (e) {
     } else if (xhr.status === 400) {
       alert(xhr.responseText);
       $("body").removeClass("loading");
-      $("#issueConfirm").deleteClass("disabled");
+      $("#issueConfirm").removeClass("disabled");
     }
   };
 });

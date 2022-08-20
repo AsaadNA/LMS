@@ -19,17 +19,15 @@ router.post("/editbooks/return/", (req, res) => {
       },
     },
     {
-      arrayFilters: [{ "el.toEmployeeCode": employeeCode }],
+      arrayFilters: [
+        { "el.toEmployeeCode": employeeCode, "el.returnDate": null },
+      ],
     },
     (err, data) => {
       if (err) {
-        res.status(400).send({
-          error: "Unexpected Error Occured",
-        });
+        res.status(400).send("Unexpected Error Occured");
       } else if (data === null) {
-        res.status(400).send({
-          error: "Book is not issued to the user",
-        });
+        res.status(400).send("Book is not issued to the user");
       } else if (data) {
         res.status(200).send({
           data,
@@ -41,34 +39,50 @@ router.post("/editbooks/return/", (req, res) => {
 
 router.post("/editbooks/issue", (req, res) => {
   const { isbn, fullName, email, employeeCode } = req.body;
-  let result = booksSchema.findOneAndUpdate(
-    { isbn },
+
+  //Check if book already issued or not
+  const result = booksSchema.findOne(
     {
-      $push: {
-        issueHistory: {
-          byName: req.session.firstName + " " + req.session.lastName,
-          byEmail: req.session.email,
-          toName: fullName,
-          toEmail: email,
-          toEmployeeCode: employeeCode,
-          issueDate: new Date(),
-          returnDate: null,
-        },
-      },
+      isbn,
+      "issueHistory.toEmployeeCode": employeeCode,
+      "issueHistory.returnDate": null,
     },
     (err, data) => {
       if (err) {
-        res.status(400).send({
-          error: "Some error occured while issuing book",
-        });
+        res.status(400).send("Unexpected Error Occurred");
+      } else if (data === null) {
+        //if not issued
+        let result = booksSchema.findOneAndUpdate(
+          { isbn },
+          {
+            $push: {
+              issueHistory: {
+                byName: req.session.firstName + " " + req.session.lastName,
+                byEmail: req.session.email,
+                toName: fullName,
+                toEmail: email,
+                toEmployeeCode: employeeCode,
+                issueDate: new Date(),
+                returnDate: null,
+              },
+            },
+          },
+          (err, data) => {
+            if (err) {
+              res.status(400).send("Some error occured issuing book");
+            } else if (data) {
+              res.status(200).send({
+                message: "Book Issued",
+              });
+            } else {
+              res.status(400).send("Could not find book");
+            }
+          }
+        );
       } else if (data) {
-        res.status(200).send({
-          message: "Book Issued",
-        });
-      } else {
-        res.status(400).send({
-          error: "Could not find book",
-        });
+        res
+          .status(400)
+          .send("Book already Has been issued to this employee code");
       }
     }
   );
@@ -86,15 +100,13 @@ router.post("/editbooks", (req, res) => {
 
   const result = newBook.save((err, data) => {
     if (err) {
-      res.status(400).send({
-        error: "Error occured while inserting new book",
-      });
+      res.status(400).send("Error occured while inserting book");
     } else if (data) {
       res.status(200).send({
         message: "new book added to the database",
       });
     } else {
-      ("Unexpected Error Occured");
+      res.status(400).send("Unexpected Error Occurred");
     }
   });
 });
@@ -125,17 +137,13 @@ router.put("/editbooks", (req, res) => {
     },
     (err, data) => {
       if (err) {
-        res.status(400).send({
-          error: "Some error occured",
-        });
+        res.status(400).send("Unexpected Error Occured");
       } else if (data) {
         res.status(200).send({
           message: "Updated Data",
         });
       } else {
-        res.status(400).send({
-          error: "Could not find data",
-        });
+        res.status(400).send("Could not find book");
       }
     }
   );
