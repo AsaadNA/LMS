@@ -45,10 +45,23 @@ router.post("/editbooks/issue", (req, res) => {
   const defaultSearch = booksSchema.find(
     {
       "issueHistory.toEmployeeCode": employeeCode,
-      "issueHistory.hasDefaulted": true,
     },
     (err, data) => {
-      if (data.length === 0) {
+      //The data returned to us is all the boooks that our user has issued
+      let isDefaulted = null;
+      const bookMAP = data.map((b) => {
+        const issueFilter = b.issueHistory.filter((i) => {
+          return i.toEmployeeCode === employeeCode && i.hasDefaulted;
+        });
+
+        if (issueFilter.length === 0) {
+          isDefaulted = false;
+        } else {
+          isDefaulted = true;
+        }
+      });
+
+      if (!isDefaulted) {
         //Check if book already issued or not
         const result = booksSchema.findOne(
           {
