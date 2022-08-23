@@ -6,6 +6,8 @@ const dotenv = require("dotenv");
 const nodemailer = require("nodemailer");
 var cors = require("cors");
 const schedule = require("node-schedule");
+const multer = require("multer");
+const csvtojson = require("csvtojson");
 
 const loginRoutes = require("./routes/login");
 const editbooksRoutes = require("./routes/editbooks");
@@ -22,6 +24,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 
+var excelStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./public/excelUploads"); // file added to the public folder of the root directory
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+var excelUploads = multer({ storage: excelStorage });
+
+//TODO: LEAN Not used on cron's
 const cronJob29 = () => {
   const result = booksSchema.find(
     { "issueHistory.returnDate": null },
@@ -189,6 +203,45 @@ app.use("/static", express.static(__dirname + "/public"));
 
 app.use(loginRoutes);
 app.use(editbooksRoutes);
+
+app.post("/uploadcsv", excelUploads.single("uploadfile"), (req, res) => {
+  importFile("./public" + "/excelUploads/" + req.file.filename);
+
+  function importFile(filePath) {
+    //  Read Excel File to Json Data
+    let arrayToInsert = [];
+    csvtojson()
+      .fromFile(filePath)
+      .then((source) => {
+        // Fetching the all data from each row
+        for (var i = 0; i < source.length; i++) {
+          var singleRow = {
+            title: source[i]["title"],
+            category: source[i]["category"],
+            isbn: source[i]["isbn"],
+            author: source[i]["author"],
+            stock: source[i]["stock"],
+          };
+          arrayToInsert.push(singleRow);
+        }
+
+        if (arrayToInsert.length === 0) {
+          res.status(400).send("Error");
+        } else {
+          //Inserting to db
+          booksSchema.insertMany(arrayToInsert, (err, result) => {
+            if (err) {
+              res
+                .status(400)
+                .send("Kindly resave or reformat csv : " + err.message);
+            } else if (result) {
+              res.redirect("/");
+            }
+          });
+        }
+      });
+  }
+});
 
 app.get("/", async (req, res) => {
   const result = await booksSchema.find({}).lean();

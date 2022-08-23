@@ -47,7 +47,7 @@ $(document).ready(function () {
         {
           text: "Import CSV Data",
           action: function (e, dt, node, config) {
-            alert("Uploading...");
+            $("#uploadModal").modal("show");
           },
         },
         {

@@ -1,6 +1,26 @@
 @html.extend('layout' , function() {
 @html.block('body' , function() {
 <div id="transparentDiv"></div>
+
+<!--------------------- UPLOAD MODAL ---------------------------------->
+<div class="modal fade" id="uploadModal">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title">Import Book Data</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <div id="loadingScreen" class="overlay"> </div> <!-- LOADING OVERLAY -->
+            <form action="/uploadcsv" class="text-center" enctype="multipart/form-data" method="post">
+               <input  required type="file" name="uploadfile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" >
+               <input  id="uploadConfirm" type="submit" value="Upload">
+            </form>  
+         </div>
+      </div>
+   </div>
+</div>
+
 <table id="myTable" class="mt-4 table table-bordered table-hover ">
    <div id="loadingScreen" class="overlay"> </div> <!-- LOADING OVERLAY -->
    <thead>
