@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 const dotenv = require("dotenv");
 const nodemailer = require("nodemailer");
-
+var cors = require("cors");
 const schedule = require("node-schedule");
 
 const loginRoutes = require("./routes/login");
@@ -17,8 +17,10 @@ dotenv.config();
 const app = express();
 
 app.set("view engine", "vash");
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cors());
 
 const cronJob29 = () => {
   const result = booksSchema.find(
@@ -183,7 +185,7 @@ app.use(
   express.static(path.join(__dirname, "node_modules/jquery/dist"))
 );
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use("/static", express.static(__dirname + "/public"));
 
 app.use(loginRoutes);
 app.use(editbooksRoutes);
