@@ -21,12 +21,6 @@ $(document).ready(function () {
       },
       buttons: [
         {
-          extend: "copy",
-          exportOptions: {
-            columns: [0, 1, 2, 3, 4, 5],
-          },
-        },
-        {
           extend: "csv",
           exportOptions: {
             columns: [0, 1, 2, 3, 4, 5],
@@ -310,4 +304,9 @@ $("#returnForm").submit(function (e) {
 function onReturnClick(isbn) {
   $("#returnModal").modal("show");
   returnISBN = isbn;
+}
+
+//Change to show issue history on click
+function onTableRowClick(isbn, title) {
+  window.location = "/view/" + isbn + "/" + title;
 }

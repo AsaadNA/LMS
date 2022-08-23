@@ -17,12 +17,12 @@
    <tbody id="tableBody">
       @model.data.forEach(function(book,i) {
       <tr>
-         <th> @book.title </th>
-         <th> @book.category </th>
-         <th> @book.isbn </th>
-         <th> @book.author </th>
-         <th class="text-center"> @book.stock </th>
-         <th class="text-center"> @model.availableStock[i] </th>
+         <th onclick="onTableRowClick('@book.isbn','@book.title')"> @book.title </th>
+         <th onclick="onTableRowClick('@book.isbn','@book.title')"> @book.category </th>
+         <th onclick="onTableRowClick('@book.isbn','@book.title')"> @book.isbn </th>
+         <th onclick="onTableRowClick('@book.isbn','@book.title')"> @book.author </th>
+         <th onclick="onTableRowClick('@book.isbn','@book.title')" class="text-center"> @book.stock </th>
+         <th onclick="onTableRowClick('@book.isbn','@book.title')" class="text-center"> @model.availableStock[i] </th>
          <th class="text-center">
             <button onclick="onEditClick(
                {    title:'@book.title', 
@@ -50,7 +50,6 @@
             </button>
             }}
             <button onClick="onReturnClick('@book.isbn')" class="btn tableButtons btn-sm btn-warning">Return</button>
-            <a href="/view/@book.isbn/@book.title" class="btn tableButtons btn-sm btn-light">View</a>
          </th>
       </tr>
       })

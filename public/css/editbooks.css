@@ -4,9 +4,13 @@ table.dataTable {
 
 .dataTables_length,
 .dataTables_filter {
-  padding-top: 20px;
+  padding-top: 35px;
 }
 #transparentDiv {
   background-color: white;
   padding: 20px;
+}
+
+tr:hover {
+  cursor: pointer;
 }

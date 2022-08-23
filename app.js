@@ -191,7 +191,7 @@ app.use(loginRoutes);
 app.use(editbooksRoutes);
 
 app.get("/", async (req, res) => {
-  const result = await booksSchema.find({});
+  const result = await booksSchema.find({}).lean();
   //Returns Available stock using whether returnDate is null or not
   let availableStock = [];
   const resMap = result.map((book) => {
