@@ -8,8 +8,10 @@ $(document).ready(function () {
   };
   var table = $("#myTable").DataTable({
     order: [],
-    pageLength: 6,
-    dom: "Bfrtip",
+    language: {
+      searchPlaceholder: "Search here....",
+    },
+    dom: 'B<"clear">lfrtip',
     buttons: {
       dom: {
         button: {

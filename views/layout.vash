@@ -49,6 +49,9 @@
                   <li class="nav-item">
                      <a class="nav-link" href="/">View Books</a>
                   </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="/">View Issued Books</a>
+                  </li>
                    <li class="nav-item">
                      <a class="nav-link" href="/">View Defaulters</a>
                   </li>
@@ -172,7 +175,7 @@
          function onChangePasswordClick(email) {
              newPassword = window.prompt("Enter new password")
              if(newPassword === null || newPassword === " " || newPassword === "") {
-                 alert("Password not changed")
+                 //
              } else {
                  
                  let dataObj = {

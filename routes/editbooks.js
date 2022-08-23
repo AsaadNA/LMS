@@ -27,13 +27,26 @@ router.post("/editbooks/return/", (req, res) => {
     },
     (err, data) => {
       if (err) {
-        res.status(400).send("Unexpected Error Occured");
-      } else if (data === null) {
-        res.status(400).send("Book is not issued to the user");
+        res.status(400).send("Unexpected error occured");
       } else if (data) {
-        res.status(200).send({
-          data,
+        //If multiple entries of the same user check whether they have returned them or not
+        //Since mongoose does not provide us with returing only updated items we need to filter out our
+        //own after updating...
+        const wasIssued = data.issueHistory.some((i) => {
+          if (i.toEmployeeCode === employeeCode) {
+            if (i.returnDate === null || i.returnDate === undefined) {
+              return true;
+            }
+          }
         });
+
+        if (!wasIssued) {
+          res.status(400).send("Book is not issued to the user");
+        } else {
+          res.status(200).send("Book returned");
+        }
+      } else if (!data) {
+        res.status(400).send("Book is not issued to the user");
       }
     }
   );

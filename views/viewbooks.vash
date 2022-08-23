@@ -40,7 +40,10 @@
 <script>
    var table = $("#viewTable").DataTable({
    order: [],
-   pageLength: 6,
+   language: {
+        searchPlaceholder: "Search here...."
+    }
+   /*pageLength: 6,
    dom: "Bfrtip",
    buttons: {
    dom: {
@@ -50,7 +53,7 @@
    },
    },
    buttons: ["copy","csv","excel","pdf","print"],
-   },
+   },*/
    });
 </script>
 })

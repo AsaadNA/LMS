@@ -6,14 +6,14 @@
    }
    .dataTables_length,
    .dataTables_filter {
-   padding-top: 0px;
+   padding-top: 30px;
    }
    #transparentDiv {
    background-color: white;
    padding: 10px;
    }
 </style>
-<div class="mt-5 mb-5">
+<div class="mt-5 mb-4">
    <h4> Issue History : "@model.title" ( ISBN @model.isbn )</h4>
 </div>
 <div>
@@ -47,8 +47,7 @@
 <script>
    var table = $("#viewTable").DataTable({
    order: [],
-   pageLength: 6,
-   dom: "Bfrtip",
+   dom: 'B<"clear">lfrtip',
    buttons: {
    dom: {
    button: {
