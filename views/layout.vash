@@ -34,12 +34,12 @@
             @{ if(model.email !== undefined) {
             <a class="navbar-brand" href="/">
             <img src="http://localhost:4000/images/favicon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
-            L.M.S 
-            </a>  <span style="color:green">( Admin : @model.fullName )</span>
+            Library Managment System 
+            </a> //<!--  <span style="color:green">( Logged In : @model.fullName )</span> -->
             } else {
             <a class="navbar-brand" href="/">
             <img src="http://localhost:4000/images/favicon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
-            L.M.S 
+            Library Managment System
             </a>
             }}
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -48,6 +48,9 @@
                   @{ if(model.email !== undefined) {
                   <li class="nav-item">
                      <a class="nav-link" href="/">View Books</a>
+                  </li>
+                   <li class="nav-item">
+                     <a class="nav-link" href="/">View Defaulters</a>
                   </li>
                   <li id="registerAdmin" class="nav-item">
                      <a class="nav-link">Register Admin</a>

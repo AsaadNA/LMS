@@ -6,7 +6,7 @@
         <form  id="loginForm" action="/login" method="submit" class="mt-5">
             <div class="col-md-4 mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email address</label>
-                <input value="asaad@gmail.com" id="emailInput" name="email" class="form-control" type="email" placeholder="xyz@pso.pk" />
+                <input value="asaad.abbasi@gmail.com" id="emailInput" name="email" class="form-control" type="email" placeholder="xyz@pso.pk" />
             </div>
             <div class="col-md-4 mb-3">
                 <label for="exampleInputPassword1" class="form-label">Password</label>

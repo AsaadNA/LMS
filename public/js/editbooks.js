@@ -49,6 +49,12 @@ $(document).ready(function () {
           },
         },
         {
+          text: "Import CSV Data",
+          action: function (e, dt, node, config) {
+            alert("Uploading...");
+          },
+        },
+        {
           text: "Insert New Book",
           action: function (e, dt, node, config) {
             $("#addBookModal").modal("show");

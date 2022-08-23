@@ -20,10 +20,6 @@ app.set("view engine", "vash");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-//We won't display default stuff
-//but we do not allow to issue any book to a default user on any book
-//remove default if user returns the book
-
 const cronJob29 = () => {
   const result = booksSchema.find(
     { "issueHistory.returnDate": null },
@@ -47,11 +43,6 @@ const cronJob29 = () => {
               const daysDIFF = Math.round(
                 (current - user.issueDate) / (1000 * 60 * 60 * 24)
               );
-
-              //              const minutesDIFF = Math.floor(
-              //                (current - user.issueDate) / 60000
-              //              );
-
               if (daysDIFF === 29) {
                 //Sending warning mail here
                 let mailOptions = {
@@ -80,104 +71,94 @@ const cronJob29 = () => {
 };
 
 const cronJob30 = () => {
-  const result = booksSchema.find(
-    { "issueHistory.returnDate": null },
-    (err, data) => {
-      if (data) {
-        let transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: process.env.SYSTEM_EMAIL,
-            pass: process.env.SYSTEM_PASSWORD,
-          },
-          tls: {
-            rejectUnauthorized: false,
-          },
-        });
-        data.map((b) => {
-          b.issueHistory.map((user) => {
-            if (user.returnDate === null) {
-              const current = new Date();
-              const daysDIFF = Math.round(
-                (current - user.issueDate) / (1000 * 60 * 60 * 24)
-              );
+  const bookResult = booksSchema.find({}, (err, bookResult) => {
+    if (err) {
+      console.log("Book Result: ", err.message);
+    } else if (bookResult) {
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.SYSTEM_EMAIL,
+          pass: process.env.SYSTEM_PASSWORD,
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+      const bookMap = bookResult.map((b) => {
+        const issueMap = b.issueHistory.map((i) => {
+          if (
+            (i.returnDate === null || i.returnDate === undefined) &&
+            (i.hasDefaulted === false ||
+              i.hasDefaulted === null ||
+              i.hasDefaulted === undefined)
+          ) {
+            const dayDiff = Math.round(
+              (new Date() - i.issueDate) / (1000 * 60 * 60 * 24)
+            );
 
-              if (daysDIFF > 30) {
-                if (
-                  user.hasDefaulted === undefined ||
-                  user.hasDefaulted === false ||
-                  user.hasDefaulted === null
-                ) {
-                  const r = booksSchema.findOneAndUpdate(
-                    {
-                      isbn: b.isbn,
-                      "issueHistory.toEmployeeCode": user.toEmployeeCode,
-                    },
-                    {
-                      $set: {
-                        "issueHistory.$[el].hasDefaulted": true,
-                      },
-                    },
-                    {
-                      arrayFilters: [
-                        {
-                          "el.toEmployeeCode": user.toEmployeeCode,
-                          "el.hasDefaulted": null,
-                        },
-                      ],
-                    },
-                    (err, data) => {
-                      if (err) {
-                        console.log("err");
-                      } else {
+            if (dayDiff > 30) {
+              const book = booksSchema.updateMany(
+                {
+                  isbn: b.isbn,
+                  "issueHistory.toEmployeeCode": i.toEmployeeCode,
+                },
+                {
+                  $set: {
+                    "issueHistory.$[el].hasDefaulted": true,
+                  },
+                },
+                {
+                  arrayFilters: [{ "el.toEmployeeCode": i.toEmployeeCode }],
+                },
+                (err, data) => {
+                  if (err) {
+                    console.log("Update Error: " + err.message);
+                  } else {
+                    console.log(
+                      "Defaulter Set:  " + i.toEmployeeCode + " | " + b.title
+                    );
+
+                    //Sending warning mail here
+                    let mailOptions = {
+                      from: "process.env.SYSTEM_EMAIL",
+                      to: i.toEmail,
+                      subject: "IMPORTANT : You Have Been Defaulted",
+                      text:
+                        "You have been defaulted for not returning '" +
+                        b.title +
+                        "'",
+                    };
+                    //sending the mail
+                    transporter.sendMail(mailOptions, (err, info) => {
+                      if (info) {
                         console.log(
-                          user.toEmployeeCode +
-                            " User status been set to default for not returning " +
+                          "Defaulted mail sent to " +
+                            i.toEmployeeCode +
+                            " | " +
                             b.title
                         );
-
-                        //Sending warning mail here
-                        let mailOptions = {
-                          from: "process.env.SYSTEM_EMAIL",
-                          to: user.toEmail,
-                          subject: "IMPORTANT : You Have Been Defaulted",
-                          text:
-                            "You have been defaulted for not returning '" +
-                            b.title +
-                            "'",
-                        };
-                        //sending the mail
-                        transporter.sendMail(mailOptions, (err, info) => {
-                          if (info) {
-                            console.log(
-                              "Defaulted mail sent to " +
-                                user.toEmployeeCode +
-                                " | " +
-                                b.title
-                            );
-                          } else if (err) {
-                            console.log("Error sending mail");
-                          }
-                        });
+                      } else if (err) {
+                        console.log("Error sending mail");
                       }
-                    }
-                  );
+                    });
+                  }
                 }
-              }
+              );
             }
-          });
+          }
         });
-      }
+      });
     }
-  );
+  });
 };
 
 //Currently running every minute
-const job29 = schedule.scheduleJob("* * * * *", function () {
+const job29 = schedule.scheduleJob("0 8 * * *", function () {
   return cronJob29();
 });
 
-const job30 = schedule.scheduleJob("* * * * *", function () {
+const job30 = schedule.scheduleJob("0 8 * * *", function () {
   return cronJob30();
 });
 

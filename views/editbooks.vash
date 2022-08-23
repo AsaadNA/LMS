@@ -36,8 +36,7 @@
             <button id="deleteButton" onclick="onDeleteClick('@book.isbn')" class="btn tableButtons btn-sm btn-danger">Delete</button>
             <!------  CHECK AVAILABLE STOCK  -->
             @{ if(model.availableStock[i] === 0) {
-            <button disabled onclick="onIssueClick(
-               {  title:'@book.title', 
+            <button disabled onclick="onIssueClick({  title:'@book.title', 
                isbn:'@book.isbn',
                stock: '@book.stock'
                })" class="btn tableButtons btn-sm btn-info">Issue
