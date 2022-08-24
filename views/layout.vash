@@ -34,7 +34,7 @@
             <a class="navbar-brand" href="/">
             <img src="/static/images/favicon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
             Library Managment System 
-            </a> //<!--  <span style="color:green">( Logged In : @model.fullName )</span> -->
+            </a>  <span style="color:green">( @model.fullName )</span> 
             } else {
             <a class="navbar-brand" href="/">
             <img src="/static/images/favicon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
@@ -49,10 +49,7 @@
                      <a class="nav-link" href="/">View Books</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href="/">View Issued Books</a>
-                  </li>
-                   <li class="nav-item">
-                     <a class="nav-link" href="/">View Defaulters</a>
+                     <a class="nav-link" href="/issuedbooks">View Issued Books</a>
                   </li>
                   <li id="registerAdmin" class="nav-item">
                      <a class="nav-link">Register Admin</a>

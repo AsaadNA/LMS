@@ -55,7 +55,7 @@ router.post("/editbooks/return/", (req, res) => {
 });
 
 router.post("/editbooks/issue", (req, res) => {
-  const { isbn, fullName, email, employeeCode } = req.body;
+  const { isbn, fullName, email, employeeCode, employeeExtension } = req.body;
 
   //returns all the books the employeeCode given is "IN"
   const defaultSearch = booksSchema
@@ -125,6 +125,7 @@ router.post("/editbooks/issue", (req, res) => {
                         toName: fullName,
                         toEmail: email,
                         toEmployeeCode: employeeCode,
+                        toExtension: employeeExtension,
                         issueDate: new Date(),
                         returnDate: null,
                       },

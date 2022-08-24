@@ -243,6 +243,79 @@ app.post("/uploadcsv", excelUploads.single("uploadfile"), (req, res) => {
   }
 });
 
+const categoriesList = [
+  "Horror",
+  "Programming",
+  "Educational",
+  "Spy",
+  "Biography",
+  "Poetry",
+  "Urdu",
+  "Politics",
+  "Action and Adventure",
+  "Classics",
+  "Comic Book or Graphic Novel",
+  "Detective and Mystery",
+  "Fantasy",
+  "Historical Fiction",
+  "Literary Fiction",
+  "Paranormal",
+  "Children",
+  "Health",
+  "Motivational",
+];
+
+/*  
+    Book Title
+    Book ISBN
+    Issued By (Name)
+    Issue To (Name)
+    Issue To (Employee code)
+    Issue To (email)
+    Issue To (Ext)
+   "Issue Date"
+
+*/
+
+app.get("/issuedbooks", (req, res) => {
+  if (req.session.email !== undefined) {
+    const result = booksSchema.find(
+      { "issueHistory.returnDate": null },
+      (err, data) => {
+        if (err) {
+          console.log(err);
+        } else {
+          let filteredData = [];
+          data.map((b) => {
+            b.issueHistory.map((h) => {
+              if (h.returnDate === null) {
+                filteredData.push({
+                  bookTitle: b.title,
+                  bookISBN: b.isbn,
+                  byName: h.byName,
+                  toName: h.toName,
+                  toEmployeeCode: h.toEmployeeCode,
+                  toEmail: h.toEmail,
+                  toExtension: h.toExtension,
+                  issueDate: h.issueDate,
+                });
+              }
+            });
+          });
+
+          res.render("issuedbooks", {
+            data: filteredData,
+            email: req.session.email,
+            fullName: req.session.firstName + " " + req.session.lastName,
+          });
+        }
+      }
+    );
+  } else {
+    res.redirect("/");
+  }
+});
+
 app.get("/", async (req, res) => {
   const result = await booksSchema.find({}).lean();
   //Returns Available stock using whether returnDate is null or not
@@ -255,6 +328,7 @@ app.get("/", async (req, res) => {
   });
   if (req.session.email !== undefined) {
     res.render("editbooks", {
+      categoriesList,
       data: result,
       availableStock,
       email: req.session.email,

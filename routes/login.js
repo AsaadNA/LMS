@@ -105,7 +105,31 @@ router.post("/register", (req, res) => {
         password,
       }).save((err, data) => {
         if (data) {
-          res.status(200).send("New Administration registered");
+          let transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: process.env.SYSTEM_EMAIL,
+              pass: process.env.SYSTEM_PASSWORD,
+            },
+            tls: {
+              rejectUnauthorized: false,
+            },
+          });
+          //Sending warning mail here
+          let mailOptions = {
+            from: "process.env.SYSTEM_EMAIL",
+            to: email,
+            subject: "User Credentials Generated",
+            text: "Email: " + email + " | password: " + password,
+          };
+          //sending the mail
+          transporter.sendMail(mailOptions, (err, info) => {
+            if (info) {
+              res.status(200).send("New Administration registered");
+            } else if (err) {
+              res.status(400).send("Error Sending Email to new Admin");
+            }
+          });
         } else if (err) {
           res.status(400).send("Unexpected Error Occured");
         } else {

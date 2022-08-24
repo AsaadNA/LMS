@@ -2,6 +2,24 @@
 @html.block('body' , function() {
 <div id="transparentDiv"></div>
 
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div id="loadingScreen" class="overlay"> </div> <!-- LOADING OVERLAY -->
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Delete Book
+            </div>
+            <div class="modal-body">
+                Are You Sure You Want to delete ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                <button id="confirmDelete" class="btn btn-danger btn-ok">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--------------------- UPLOAD MODAL ---------------------------------->
 <div class="modal fade" id="uploadModal">
    <div class="modal-dialog">
@@ -104,10 +122,10 @@
                </div>
                <div class="mb-3">
                   <label class="col-form-label">Category</label>
-                  <select id="bookCategorySelect" class="form-select">
-                     <option value="Horror">Horror</option>
-                     <option value="Programming">Programming</option>
-                     <option value="Fantasy">Fantasy</option>
+                   <select id="bookCategorySelect" class="form-select">
+                     @model.categoriesList.forEach(function(c) {
+                        <option value='@c'> @c </option>
+                     })
                   </select>
                </div>
             </form>
@@ -133,6 +151,10 @@
                <div class="mb-3">
                   <label class="col-form-label">Employee Code</label>
                   <input required id="issueEmployeeCodeInput" type="text" class="form-control" id="recipient-name">
+               </div>
+               <div class="mb-3">
+                  <label class="col-form-label">Employee Ext #</label>
+                  <input required id="issueExtensionInput" type="text" class="form-control" id="recipient-name">
                </div>
                <div class="mb-3">
                   <label class="col-form-label">Full Name</label>
@@ -182,9 +204,9 @@
                <div class="mb-3">
                   <label class="col-form-label">Category</label>
                   <select id="bookCategorySelect_add" class="form-select">
-                     <option value="Horror">Horror</option>
-                     <option value="Programming">Programming</option>
-                     <option value="Fantasy">Fantasy</option>
+                     @model.categoriesList.forEach(function(c) {
+                        <option value='@c'> @c </option>
+                     })
                   </select>
                </div>
             </form>

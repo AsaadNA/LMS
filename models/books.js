@@ -33,6 +33,7 @@ const booksSchema = new mongoose.Schema({
       toName: { type: String },
       toEmail: { type: String },
       toEmployeeCode: { type: String },
+      toExtension: { type: String },
       issueDate: { type: Date },
       returnDate: { type: Date },
       hasDefaulted: { type: Boolean },

@@ -14,32 +14,32 @@
    }
 </style>
 <div class="mt-5 mb-4">
-   <h4> Issue History : "@model.title" ( ISBN @model.isbn )</h4>
+   <h4> All Issued Books </h4>
 </div>
 <div>
    <table id="viewTable" class="mt-4 table table-hover table-bordered">
       <thead>
          <tr>
+            <th scope="col"> Book Title </th>
+            <th scope="col"> Book ISBN </th>
             <th scope="col"> Issued By (Name) </th>
-            <th scope="col"> Issued By (Email) </th>
             <th scope="col"> Issued To (Name) </th>
-            <th scope="col"> Issued To (Email) </th>
             <th scope="col"> Issued To (Employee Code) </th>
-            <th scope="col"> Issued To (Extension #) </th>
+            <th scope="col"> Issued To (Email) </th>
+            <th scope="col"> Issue To (Ext #) </th>
             <th scope="col"> Issue Date </th>
-            <th scope="col"> Return Date </th>
          </tr>
       <tbody id="viewTableBody">
         @model.data.forEach(function(history) {
             <tr>
+                <td> @history.bookTitle </td>
+                <td> @history.bookISBN </td>
                 <td> @history.byName </td>
-                <td> @history.byEmail </td>
                 <td> @history.toName </td>
-                <td> @history.toEmail </td>
                 <td> @history.toEmployeeCode </td>
+                <td> @history.toEmail </td>
                 <td> @history.toExtension </td>
                 <td> @history.issueDate </td>
-                <td> @history.returnDate </td>
             </tr>
         })
       </tbody>

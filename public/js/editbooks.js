@@ -155,12 +155,14 @@ $("#issueForm").submit(function (e) {
   let fullName = $("#issueFullNameInput").val();
   let email = $("#issueEmailInput").val();
   let employeeCode = $("#issueEmployeeCodeInput").val();
+  let employeeExtension = $("#issueExtensionInput").val();
 
   let dataObj = {
     isbn: issueISBN,
     fullName: fullName,
     email: email,
     employeeCode: employeeCode,
+    employeeExtension: employeeExtension,
   };
 
   let data = JSON.stringify(dataObj);
@@ -239,12 +241,18 @@ $("#insertBook").click(function () {
 
 /* ******* DELETE  BUTTON ********** */
 
+let deleteISBN = "";
 function onDeleteClick(isbn) {
+  $("#confirm-delete").modal("show");
+  deleteISBN = isbn;
+}
+
+$("#confirmDelete").click(function () {
   $("body").addClass("loading");
   $("#deleteButton").addClass("disabled");
 
   let dataObj = {
-    isbn,
+    isbn: deleteISBN,
   };
 
   let data = JSON.stringify(dataObj);
@@ -265,7 +273,7 @@ function onDeleteClick(isbn) {
       $("#deleteButton").removeClass("disabled");
     }
   };
-}
+});
 
 /* ******* RETURN BUTTON ********** */
 
